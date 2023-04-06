@@ -32,7 +32,7 @@ class getCom(QThread):  # 获取串口号线程
     def port_listUpdate(self, port_list):
         self.port_list_orignal = port_list
 
-class serialRead2(QThread):  # 读取串口数据线程
+class serialRead2(QThread):  # 读取串口数据线程(两通道)
     '''读取串口数据线程
     
     Signal: dateReadUpdate_new: 读取到的数据更新信号
@@ -114,7 +114,7 @@ class serialRead2(QThread):  # 读取串口数据线程
         except:
             return 0
 
-class serialRead(QThread):  # 读取串口数据线程
+class serialRead(QThread):  # 读取串口数据线程(32通道)  # TODO: 根据通道数自动分配读取线程
     '''读取串口数据线程
     
     Signal: dateReadUpdate_new: 读取到的数据更新信号

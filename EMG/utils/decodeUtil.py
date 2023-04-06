@@ -70,7 +70,6 @@ def BandPassFilter(passbandFreq, stopbandFreq, fs, N=8, ripple=1):  # 带通滤�
     return butter(N=N, Wn=[passbandFreq, stopbandFreq],
                   btype='bandpass', output='sos', fs=fs)
 
-
 if __name__ == '__main__':
 
     i = 7
