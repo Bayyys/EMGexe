@@ -205,17 +205,17 @@ class MyMplCanvasFile(FigureCanvas):
         except:
             ...
 
-class drawFrameFile(QFrame, Ui_Form):
+class drawFrameFile(QFrame):    #, Ui_Form):
     history = np.array([])  # 历史数据
 
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
-        self.setupUi(self)
-        # try:
-        #     self.ui = uic.loadUi('ui/draw.ui', self)
-        # except:
-        #     self.ui = uic.loadUi('draw.ui', self)
+        # self.setupUi(self)
+        try:
+            self.ui = uic.loadUi('ui/draw.ui', self)
+        except:
+            self.ui = uic.loadUi('draw.ui', self)
         self.initUI()
 
     def initUI(self):
@@ -301,6 +301,8 @@ class MyMplCanvas(FigureCanvas):
     Ydis = 200000
     xdata = np.array([])
     ydata = np.array([])
+    xdata_o = np.array([])
+    ydata_o = np.array([])
 
     def __init__(self, parent=None):
         super().__init__()
@@ -313,12 +315,19 @@ class MyMplCanvas(FigureCanvas):
 
     def initChart(self):
         self.fig, self.ax = plt.subplots()
+        # self.fig = plt.figure()
+        # self.ax2 = self.fig.add_subplot(211)
+        # self.ax = plt.subplot(212)
         self.ax.set_xlim(self.XMAX - glo.XDIS, self.XMAX)
         self.ax.set_ylim(-glo.YDIS, glo.YDIS)
-        self.ax.set_axis_off()
+        # self.ax.set_axis_off()
+        # self.ax2.set_axis_off()
+        # self.ax2.set_xlim(self.XMAX - glo.XDIS, self.XMAX)
+        # self.ax2.set_ylim(-glo.YDIS, glo.YDIS)
         self.ax.set_ylabel('Voltage (μV)')
         self.ax.set_xlabel('Time (ms)')
         self.line, = self.ax.plot([], [])
+        # self.line2, = self.ax2.plot([], [])
         FigureCanvas.__init__(self, self.fig)
 
         self.fig.set_constrained_layout(True)   # 自动调整子图间距
@@ -335,19 +344,26 @@ class MyMplCanvas(FigureCanvas):
         self.xdata = np.arange(0, self.XMAX, 1)
         self.ydata = np.zeros(self.XMAX)
         self.line.set_data(self.xdata, self.ydata)
+        # self.xdata_o = np.arange(0, self.XMAX, 1) # TODO
+        # self.ydata_o = np.zeros(self.XMAX)
+        # self.line2.set_data(self.xdata_o, self.ydata_o)
         self.draw()
 
     def initUpdataTimer(self):  # 定时更新图像 xxx
         # threading.Thread(target=self.update_figure).start()
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_figure)
-        self.timer.start(1)  # 更新时间间隔为1ms
+        self.timer.start(50)  # 更新时间间隔为1ms
 
     def update_figure(self):    # 定时更新图像 (1ms)    xxx
         if glo.connected:
             # time1 = time.time()
             # self.line.set_ydata(self.ydata)
             self.draw()
+            # self.line.draw(self.get_renderer())
+            # self.ax.draw_artist(self.ax.lines)
+            # self.ax.redraw_in_frame()
+
             # self.flush_events()
             # print("use time:", time.time() - time1)
         ...
@@ -439,7 +455,7 @@ class MyMplCanvas(FigureCanvas):
         except:
             ...
 
-class drawFrame(QFrame, Ui_Form):
+class drawFrame(QFrame):    #, Ui_Form):
     history = np.array([])
     data_process = np.array([])
     data_add = np.array([])
@@ -448,11 +464,11 @@ class drawFrame(QFrame, Ui_Form):
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
-        self.setupUi(self)
-        # try:
-        #     self.ui = uic.loadUi('ui/draw.ui', self)
-        # except:
-        #     self.ui = uic.loadUi('draw.ui', self)
+        # self.setupUi(self)
+        try:
+            self.ui = uic.loadUi('ui/draw.ui', self)
+        except:
+            self.ui = uic.loadUi('draw.ui', self)
         self.initUI()
         # ani = animation(self.canvas.fig, self.test, interval = 50)
         # self.initData()
@@ -490,6 +506,11 @@ class drawFrame(QFrame, Ui_Form):
             process = sosfilt(glo.sos_notch, process)
         if glo.isBandPassFilter:
             process = sosfilt(glo.sos_band, process)
+
+        # self.canvas.ydata_o[:-len_data] = self.canvas.ydata_o[len_data:]  # TODO
+        # self.canvas.ydata_o[-len_data:] = data_filter[-len_data:]
+        # self.canvas.line2.set_ydata(self.canvas.ydata_o)
+
         data = process[-len_data:]
 
         self.canvas.ydata[:-len_data] = self.canvas.ydata[len_data:]
@@ -552,11 +573,13 @@ class drawFrame(QFrame, Ui_Form):
     def updateYlim(self):   # 更新Y轴范围
         self.canvas.ax.set_ylim(-glo.YDIS, glo.YDIS)
         self.canvas.Ydis = glo.YDIS
+        # self.canvas.ax2.set_ylim(-glo.YDIS, glo.YDIS)
         self.canvas.fig.canvas.draw_idle()
 
     def updateXlim(self):  # 更新X轴范围
         self.canvas.ax.set_xlim(self.canvas.XMAX - glo.XDIS, self.canvas.XMAX)
         self.canvas.Xdis = glo.XDIS
+        # self.canvas.ax2.set_xlim(self.canvas.XMAX - glo.XDIS, self.canvas.XMAX)
         self.canvas.fig.canvas.draw_idle()
 
     def dataTimer(self):    # 定时器    xxx
