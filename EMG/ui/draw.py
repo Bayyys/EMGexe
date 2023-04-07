@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'd:\Download\OneDrive - zju.edu.cn\code\temp\AAA\ui\draw.ui'
+# Form implementation generated from reading ui file 'd:\Download\OneDrive - zju.edu.cn\code\EMGexe\EMG\ui\draw.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -115,6 +115,9 @@ class Ui_Form(object):
         self.canvasLayout = QtWidgets.QVBoxLayout()
         self.canvasLayout.setObjectName("canvasLayout")
         self.verticalLayout_3.addLayout(self.canvasLayout)
+        self.plotWeight = QtWidgets.QVBoxLayout()
+        self.plotWeight.setObjectName("plotWeight")
+        self.verticalLayout_3.addLayout(self.plotWeight)
         self.verticalLayout_2.addWidget(self.canvasFrame)
         self.verticalLayout.addWidget(self.chartFrame)
 

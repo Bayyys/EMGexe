@@ -253,7 +253,7 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
             self.statusBar.showMessage('文件保存失败, 请及时存储测量数据!', 3000)
         self.file_btn_dataload.setVisible(True)  # 保存成功后, 打开数据加载按钮
 
-    def action_exit_clicked(self):  # 退出事件
+    def action_exit_clicked(self):  # 退出事件  # WAIT
         ...
 
     def btn_connect_clicked(self):  # 连接按钮点击事件

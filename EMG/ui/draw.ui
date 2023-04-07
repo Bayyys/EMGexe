@@ -262,6 +262,9 @@
          <item>
           <layout class="QVBoxLayout" name="canvasLayout"/>
          </item>
+         <item>
+          <layout class="QVBoxLayout" name="plotWidget"/>
+         </item>
         </layout>
        </widget>
       </item>

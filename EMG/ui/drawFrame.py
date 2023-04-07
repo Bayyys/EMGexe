@@ -11,6 +11,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from ui.draw import Ui_Form
 import utils.globalParams as glo
 from matplotlib.lines import Line2D
+import pyqtgraph as pg
 
 class FFTThread(QThread):
     fftSignal = pyqtSignal(np.ndarray, np.ndarray)
@@ -455,11 +456,63 @@ class MyMplCanvas(FigureCanvas):
         except:
             ...
 
-class drawFrame(QFrame):    #, Ui_Form):
+class MyPlotCanvas(pg.PlotWidget):
+    XMAX = 16000
+    Xdis = 1000
+    Ydis = 200000
+    xdata = np.array([])
+    ydata = np.array([])
+    xdata_o = np.array([])
+    ydata_o = np.array([])
+
+    def __init__(self, parent=None):
+        super().__init__()
+        self.mainWin = parent
+        self.initChart()
+        self.initData()
+        self.initUpdataTimer()
+
+    def initChart(self):
+        pg.setConfigOption('background', 'w')
+        pg.setConfigOption('foreground', 'k') 
+        ...
+
+    def initData(self):
+        self.xdata = np.arange(0, self.XMAX, 1)
+        self.ydata = np.zeros(self.XMAX)
+        self.curve = self.plot(self.xdata, self.ydata, pen='k')
+        self.setYRange(-3, 3)
+        self.curve.setPos(0, 0)
+        # self.setBackground('w')
+
+    def initUpdataTimer(self):  # 定时更新图像 xxx
+        # threading.Thread(target=self.update_figure).start()
+        self.timer = QTimer(self)
+        # self.timer.timeout.connect(self.update_figure)
+        # self.timer.start(50)  # 更新时间间隔为1ms
+
+    def update_figure(self):    # 定时更新图像 (1ms)    xxx
+        if glo.connected:
+            # time1 = time.time()
+            # self.line.set_ydata(self.ydata)
+            self.draw()
+            # self.line.draw(self.get_renderer())
+            # self.ax.draw_artist(self.ax.lines)
+            # self.ax.redraw_in_frame()
+
+            # self.flush_events()
+            # print("use time:", time.time() - time1)
+        ...
+
+class drawFrame(QFrame, Ui_Form):
     history = np.array([])
     data_process = np.array([])
     data_add = np.array([])
     data_add_mutex = QMutex()
+    xdata = np.arange(16000)
+    ydata = np.zeros(16000)
+    pos = 0
+    
 
     def __init__(self, parent=None):
         super().__init__()
@@ -470,19 +523,23 @@ class drawFrame(QFrame):    #, Ui_Form):
         except:
             self.ui = uic.loadUi('draw.ui', self)
         self.initUI()
-        # ani = animation(self.canvas.fig, self.test, interval = 50)
-        # self.initData()
 
     def initUI(self):
-        self.canvas = MyMplCanvas(self.mainWin)
-        self.time = 0
-        self.canvasLayout.addWidget(self.canvas)
         self.btn_reset.clicked.connect(lambda: self.canvas.zoomReset())
         self.btn_close.clicked.connect(lambda: self.setVisible(False))
+
+        pg.setConfigOption('background', 'w')
+        pg.setConfigOption('foreground', 'k') 
+        pg.setConfigOption('leftButtonPan', False)
+
+        self.canvas = MyPlotCanvas(self.mainWin)
+        self.plotWidget.addWidget(self.canvas)
+
         self.processTimer = QTimer(self)
         self.processTimer.timeout.connect(self.processData)
-        self.processTimer.start(1)
+        self.processTimer.start(50)
         ...
+    
     def processData(self):
         self.data_add_mutex.lock()
         data = self.data_add
@@ -507,68 +564,25 @@ class drawFrame(QFrame):    #, Ui_Form):
         if glo.isBandPassFilter:
             process = sosfilt(glo.sos_band, process)
 
-        # self.canvas.ydata_o[:-len_data] = self.canvas.ydata_o[len_data:]  # TODO
-        # self.canvas.ydata_o[-len_data:] = data_filter[-len_data:]
-        # self.canvas.line2.set_ydata(self.canvas.ydata_o)
-
         data = process[-len_data:]
 
+        self.pos += len_data
+        self.canvas.curve.setPos(self.pos, 0)
         self.canvas.ydata[:-len_data] = self.canvas.ydata[len_data:]
         self.canvas.ydata[-len_data:] = data
-        # self.canvas.ydata[-len_data:] = self.history[-len_data:]
-        # print(self.detrendFlag)
-        # if self.detrendFlag == True:
-        #     print("detrend")
-        #     self.canvas.ydata = detrend(self.canvas.ydata, type='constant')
+        self.canvas.curve.setData(self.canvas.xdata, self.canvas.ydata)
 
-        self.canvas.line.set_ydata(self.canvas.ydata)
+
         self.lb_min.setText(str(np.round(min(self.canvas.ydata[-500:]), 3)))
         self.lb_max.setText(str(np.round(max(self.canvas.ydata[-500:]), 3)))
-        self.lb_rms.setText(str(np.round(np.sqrt(np.mean(self.canvas.ydata[-500:]**2)), 3)))
+        self.lb_rms.setText(
+            str(np.round(np.sqrt(np.mean(self.canvas.ydata[-500:]**2)), 3)))
+        ...
 
     def addData(self, data):    # 添加数据
-        # print(data)
-        # self.data_process = np.append(self.data_process, data)
-        # if self.data_process.size <= glo.sample_rate / 100:
-            # return
-        # self.data_process = self.data_process[-100:]
-        # if glo.isBaseline == True:
-        #     self.data_process = detrend(self.data_process, type='constant')
-        # data = self.data_process.copy()
-        # self.data_process = np.array([])
         self.data_add_mutex.lock()
         self.data_add = np.append(self.data_add, data)
         self.data_add_mutex.unlock()
-        # len_data = len(data)
-        # self.history = np.append(self.history, data)[-glo.sample_rate:]
-        # if glo.isBaseline:
-        #     data_filter = detrend(self.history.copy(), type='constant')
-        # else:
-        #     data_filter = self.history.copy()
-        # process = data_filter
-        # if glo.isLowPassFilter:
-        #     process = sosfilt(glo.sos_low, process)
-        # if glo.isHighPassFilter:
-        #     process = sosfilt(glo.sos_high, process)
-        # if glo.isNotchFilter:
-        #     process = sosfilt(glo.sos_notch, process)
-        # if glo.isBandPassFilter:
-        #     process = sosfilt(glo.sos_band, process)
-        # data = process[-len_data:]
-
-        # self.canvas.ydata[:-len_data] = self.canvas.ydata[len_data:]
-        # self.canvas.ydata[-len_data:] = data
-        # # self.canvas.ydata[-len_data:] = self.history[-len_data:]
-        # # print(self.detrendFlag)
-        # # if self.detrendFlag == True:
-        # #     print("detrend")
-        # #     self.canvas.ydata = detrend(self.canvas.ydata, type='constant')
-
-        # self.canvas.line.set_ydata(self.canvas.ydata)
-        # self.lb_min.setText(str(np.round(min(self.canvas.ydata[-500:]), 3)))
-        # self.lb_max.setText(str(np.round(max(self.canvas.ydata[-500:]), 3)))
-        # self.lb_rms.setText(str(np.round(np.sqrt(np.mean(self.canvas.ydata[-500:]**2)), 3)))
-        # # print("time: ", time.time() - time1)
 
     def updateYlim(self):   # 更新Y轴范围
         self.canvas.ax.set_ylim(-glo.YDIS, glo.YDIS)
@@ -589,19 +603,6 @@ class drawFrame(QFrame):    #, Ui_Form):
         # self.mytimer.start(10)
         ...
     
-    def test(self):
-        self.canvas.ax.set_ylim(-glo.YDIS, glo.YDIS)
-
-    def add(self):  # 添加数据  xxx
-        max = np.max(self.canvas.ydata)
-        min = np.min(self.canvas.ydata)
-        rms = np.sqrt(np.mean(self.canvas.ydata ** 2))
-        # self.list = np.arange(max(self.list) + 1, max(self.list) + 10, 1)
-        # self.addData(self.list)
-        self.lb_min = min
-        self.lb_max = max
-        self.lb_rms = rms
-
     def keyPressEvent(self, e) -> None: # 键盘事件
         if e.key() == Qt.Key_Enter:
             self.chart.zoomReset()
@@ -633,7 +634,10 @@ if __name__ == '__main__':
     # plt.show()
 
     app = QApplication(sys.argv)
-    ex = drawFrameFile()
+    pg.setConfigOption('background', 'w')
+    pg.setConfigOption('foreground', 'k') 
+    pg.setConfigOption('leftButtonPan', False)
+    ex = drawFrame()
     # data2 = sosfilt(glo.sos_high, data3)
     # plt.plot(np.arange(0, len(data2) / 8000, 1 / 8000), data2)
     # plt.show()
@@ -643,15 +647,15 @@ if __name__ == '__main__':
     # data = sosfilt(glo.sos_band, data4)
     # plt.plot(np.arange(0, len(data) / 8000, 1 / 8000), data)
     # plt.show()
-    data = data1[2000:]
-    ex.canvas.ydata = data
-    ymax = np.max(data)
-    ymin = np.min(data)
-    ex.canvas.xdata = np.arange(0, len(data) / 8000, 1 / 8000)
-    ex.canvas.line.set_data(ex.canvas.xdata, ex.canvas.ydata)
-    ex.canvas.ax.set_xlim(0, np.max(ex.canvas.xdata) + 1)
-    ex.canvas.ax.set_ylim(ymin, ymax)
-    ex.canvas.draw()
+    # data = data1[2000:]
+    # ex.canvas.ydata = data
+    # ymax = np.max(data)
+    # ymin = np.min(data)
+    # ex.canvas.xdata = np.arange(0, len(data) / 8000, 1 / 8000)
+    # ex.canvas.line.set_data(ex.canvas.xdata, ex.canvas.ydata)
+    # ex.canvas.ax.set_xlim(0, np.max(ex.canvas.xdata) + 1)
+    # ex.canvas.ax.set_ylim(ymin, ymax)
+    # ex.canvas.draw()
     # print(data[-100:])
     ex.show()
     sys.exit(app.exec_())
