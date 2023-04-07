@@ -25,7 +25,7 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
 
     def initUI(self):
         self.initMenuUI()   # 菜单栏初始化
-        self.initRealTimeUI()   # 实时检测界面初始化
+        self.initRealUI()   # 实时检测界面初始化
         self.initFileUI()   # 文件处理界面初始化
 
     def initMenuUI(self):  # 菜单栏初始化
@@ -39,7 +39,7 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
         # Tab 部分
         self.tabWidget.setCurrentIndex(0)   # 默认显示实时检测部分
 
-    def initRealTimeUI(self):  # 实时检测界面初始化
+    def initRealUI(self):  # 实时检测界面控件&槽初始化
         #=========== 实时检测部分 ===========#
         # 连接部分
         self.btn_connect.clicked.connect(self.btn_connect_clicked)   # 连接按钮
@@ -80,7 +80,7 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
         self.box_channel_num.currentIndexChanged.connect(
             self.box_channel_num_changed)  # 通道数
 
-    def initFileUI(self):  # 文件处理界面初始化
+    def initFileUI(self):  # 文件处理界面控件&槽初始化
         #=========== 历史数据部分 ===========#
         # 文件操作部分
         self.file_btn_open.clicked.connect(
@@ -175,7 +175,7 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
         #----------------- 实时检测部分 -----------------#
         self.box_ydis.setCurrentIndex(5)
         self.box_xdis.setCurrentIndex(1)
-        self.box_sample_rate.setCurrentIndex(2)
+        self.box_sample_rate.setCurrentIndex(6)
         self.box_channel_num.setCurrentIndex(0)
         self.ck_baseline.setChecked(True)
         self.ck_low.setChecked(False)
@@ -191,7 +191,7 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
         #----------------- 文件检测部分 -----------------#
         self.file_box_ydis.setCurrentIndex(5)
         self.file_box_xdis.setCurrentIndex(1)
-        self.file_box_sample_rate.setCurrentIndex(2)
+        self.file_box_sample_rate.setCurrentIndex(6)
         self.file_box_channel_num.setCurrentIndex(0)
         self.file_ck_baseline.setChecked(True)
         self.file_ck_low.setChecked(False)
@@ -575,7 +575,7 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
         ...
 
     def file_btn_delete_clicked(self):
-        self.file_btn_reset_clicked()
+        # self.file_btn_reset_clicked()
         delete_from = int(self.file_sb_delete_low.text())
         delete_to = int(self.file_sb_delete_high.text())
         if delete_from == '' or delete_to == '':
