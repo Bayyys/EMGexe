@@ -1,7 +1,7 @@
 import sys
 import os
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QComboBox, QVBoxLayout
-from PyQt5.QtCore import Qt, QDateTime, pyqtSignal, QThread, QMutex
+from PyQt5.QtCore import Qt, QDateTime, pyqtSignal, QThread, QMutex, QTimer
 from PyQt5 import uic
 # 串口操作
 import utils.serialUtil as serUtil
@@ -11,15 +11,15 @@ from ui.mainWindow import Ui_MainWindow
 import numpy as np
 
 
-class MyWindow(QMainWindow):    # Ui_MainWindow):
+class MyWindow(QMainWindow, Ui_MainWindow):
     XDIS_SIGNAL = pyqtSignal()
     YDIS_SIGNAL = pyqtSignal()
     SAMPLE_RATE_SIGNAL = pyqtSignal()
 
     def __init__(self):
         super().__init__()
-        # self.setupUi(self)
-        self.ui = uic.loadUi('ui/mainWindow.ui', self)
+        self.setupUi(self)
+        # self.ui = uic.loadUi('ui/mainWindow.ui', self)
         self.initDATA()  # 初始化数据
         self.initUI()   # 初始化UI界面
 
@@ -32,8 +32,8 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
         # 菜单栏部分
         self.action_open.triggered.connect(
             self.action_open_clicked)    # 菜单栏-打开文件
-        self.action_save.triggered.connect(
-            self.action_save_clicked)           # 菜单栏-保存文件
+        # self.action_save.triggered.connect(
+            # self.action_save_clicked)           # 菜单栏-保存文件
         self.action_exit.triggered.connect(
             self.action_exit_clicked)    # 菜单栏-退出
         # Tab 部分
@@ -141,13 +141,14 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
         self.chartFrameList = []
         self.initChartFrame()
         # FFT部分
-        self.fftcanvas = FFTCanvas()
+        self.fftcanvas = FFTCanvas(self)
         self.layoutFFT.addWidget(self.fftcanvas)
 
     def initGlobalData(self): # 初始化全局参数
         glo.channel_num = int(self.box_channel_num.currentText())
+        glo.sample_rate = int(self.box_sample_rate.currentText())
         glo.YDIS = int(self.box_ydis.currentText())
-        glo.XDIS = int(self.box_xdis.currentText())
+        glo.XDIS = int(self.box_xdis.currentText()) * glo.sample_rate
         glo.isLowPassFilter = self.ck_low.isChecked()
         glo.isHighPassFilter = self.ck_high.isChecked()
         glo.isNotchFilter = self.ck_notch.isChecked()
@@ -158,7 +159,6 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
         glo.notchFilter_param = self.sb_notch_param.value()
         glo.bandFilter_pass = self.sb_band_pass.value()
         glo.bandFilter_stop = self.sb_band_stop.value()
-        glo.sample_rate = int(self.box_sample_rate.currentText())
 
     def initChartFrame(self):   # 初始化图表 Frame
         for i in range(2):
@@ -174,14 +174,14 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
     def initUIIndex(self):   # 初始化控件索引
         #----------------- 实时检测部分 -----------------#
         self.box_ydis.setCurrentIndex(5)
-        self.box_xdis.setCurrentIndex(1)
+        self.box_xdis.setCurrentIndex(2)
         self.box_sample_rate.setCurrentIndex(6)
         self.box_channel_num.setCurrentIndex(0)
         self.ck_baseline.setChecked(True)
         self.ck_low.setChecked(False)
-        self.ck_high.setChecked(False)
-        self.ck_notch.setChecked(False)
-        self.ck_band.setChecked(False)
+        self.ck_high.setChecked(True)
+        self.ck_notch.setChecked(True)
+        self.ck_band.setChecked(True)
         self.sb_low.setValue(50)
         self.sb_high.setValue(1)
         self.sb_notch_cutoff.setValue(50)
@@ -190,14 +190,14 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
         self.sb_band_stop.setValue(50)
         #----------------- 文件检测部分 -----------------#
         self.file_box_ydis.setCurrentIndex(5)
-        self.file_box_xdis.setCurrentIndex(1)
+        self.file_box_xdis.setCurrentIndex(2)
         self.file_box_sample_rate.setCurrentIndex(6)
         self.file_box_channel_num.setCurrentIndex(0)
         self.file_ck_baseline.setChecked(True)
         self.file_ck_low.setChecked(False)
-        self.file_ck_high.setChecked(False)
-        self.file_ck_notch.setChecked(False)
-        self.file_ck_band.setChecked(False)
+        self.file_ck_high.setChecked(True)
+        self.file_ck_notch.setChecked(True)
+        self.file_ck_band.setChecked(True)
         self.file_sb_low.setValue(50)
         self.file_sb_high.setValue(1)
         self.file_sb_notch_cutoff.setValue(50)
@@ -234,8 +234,6 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
             self.initChartFrameFile()
             self.et_filePath.setText(dirpath)
             self.statusBar.showMessage('文件加载成功 (' + dirpath + ')', 5000)
-            # print(glo.history.shape)
-        ...
 
     def action_save_clicked(self):  # 保存文件
         if glo.history.shape[1] < 2:
@@ -266,6 +264,8 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
             self.box_com.currentText().split(' ')[0],    # 串口号
             self.box_bps.currentText(),  # 波特率
             self.box_timex.currentText()))  # 超时时间
+        if not self.savePathDir():
+            return
         if serUtil.serialIsOpen(glo.get_ser()):    # 连接成功
             self.statusBar.showMessage("串口连接成功, 点击<开始>按钮进行测量", 5000)
             self.group_state_file.setEnabled(False)
@@ -293,22 +293,23 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
             self.layoutChart.itemAt(i).widget().deleteLater()
         self.chartFrameList.clear()
         self.initChartFrame()
-        glo.init_history()
 
     def btn_disconnect_clicked(self):   # 断开连接按钮点击事件
         if glo.get_scan():
             glo.set_connected(False)
             serUtil.serialClose(glo.get_ser())
             glo.set_com('')
+            self.saveHistoryQueue()
             self.lb_connect.setText('等待连接')
             self.lb_connect.setStyleSheet('color: gray')
             self.lb_start.setText('尚未连接')
             self.lb_start.setStyleSheet('color: gray')
             self.btn_start.setEnabled(False)
             self.btn_stop.setEnabled(False)
-            self.action_save_clicked()
+            # self.action_save_clicked()
             self.box_sample_rate.setEnabled(True)
             glo.set_scan(False)
+            self.renameDataFile()
         else:
             self.statusBar.showMessage("未连接, 无需断开连接", 3000)
             return
@@ -322,21 +323,18 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
                                        self.box_bps.currentText(),  # 波特率
                                        self.box_timex.currentText()))   # 超时时间
         if serUtil.serialIsOpen(glo.get_ser()):    # 连接成功
-            # self.mythread = threading.Thread(target=self.updateChart)
-            # self.mythread.daemon = True
-            # self.mythread.start()
-            # print("开始发送指令")
             glo.sendMessage(state='start', connect='usb',
                             sample_rate=glo.sample_rate, channel=glo.channel_num)
-            # print("发送指令完毕")
             glo.initFilterParams()
+
             self.connSuccess()
             self.connSeialThread()
             self.fftThread()
+            self.saveTimer = QTimer()
+            self.saveTimer.timeout.connect(self.saveHistoryQueue)
+            self.saveTimer.start(50)
             self.box_sample_rate.setEnabled(False)
             self.statusBar.showMessage("开始测量", 5000)
-            # self.updateFigThread()
-            # self.connChartTimer()
         else:   # 连接失败
             glo.set_connected(False)
             serUtil.serialClose(glo.get_ser())
@@ -346,6 +344,7 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
         serUtil.serialClose(glo.get_ser())
         self.serialRead.terminate()
         self.fftthread.terminate()
+        self.saveTimer.stop()
         self.btn_stop.setEnabled(False)
         self.lb_start.setText('已暂停')
         self.lb_start.setStyleSheet('color: red')
@@ -356,9 +355,32 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
             self.btn_disconnect_clicked()
             self.btn_connect_clicked()
 
+    def savePathDir(self):  # 创建数据存储文件夹以及文件
+        self.datalength = 0
+        path = self.et_filePath.text()+'/MeasureData'
+        self.saveFileName = path+QDateTime.currentDateTime().toString('/yy-MM-dd-hhmm')+'.txt'
+        if not os.path.exists(path):
+            os.makedirs(path)
+        try:
+            with open(self.saveFileName, 'a') as f:
+                return True
+        except:
+            self.statusBar.showMessage("文件创建失败", 5000)
+            print("文件创建失败")
+            return False
+        ...
+
+    def renameDataFile(self):   # 重命名数据文件
+        if os.path.exists(self.saveFileName):
+            fsize = os.path.getsize(self.saveFileName)
+            if fsize < 1024:
+                os.remove(self.saveFileName)
+            else:
+                os.rename(self.saveFileName, self.saveFileName.replace('.txt', '-'+str(glo.sample_rate)+'Hz'+'-'+str(int(self.datalength / glo.sample_rate))+'s.txt'))
+
     def btn_filePath_clicked(self):   # 文件路径按钮点击事件
         path = QFileDialog.getExistingDirectory(
-            None, "选取文件夹", self.et_filePath.text())  # 起始路径
+            None, "选取文件夹", self.et_filePath.text()+'/MeasureData')  # 起始路径
         if path != "":
             self.et_filePath.setText(path)
 
@@ -376,10 +398,10 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
             self.statusBar.showMessage(
                 'Y轴显示范围: ' + self.box_ydis.currentText() + 'μV', 3000)
         elif self.sender().objectName() == 'box_xdis':
-            glo.XDIS = int(self.box_xdis.currentText())
+            glo.XDIS = int(self.box_xdis.currentText()) * glo.sample_rate
             self.XDIS_SIGNAL.emit()
             self.statusBar.showMessage(
-                'X轴显示范围: ' + self.box_xdis.currentText() + 'ms', 3000)
+                'X轴显示范围: ' + str(glo.XDIS) + 'ms', 3000)
         ...
 
     def ck_all_filter_clicked(self):  # 滤波器选择事件
@@ -433,13 +455,13 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
     def box_sample_rate_changed(self):  # 采样率改变事件
         glo.sample_rate = int(self.box_sample_rate.currentText())
         self.statusBar.showMessage(
-            '采样率: ' + self.box_sample_rate.currentText() + 'Hz', 3000)
+            '采样率: ' + str(glo.sample_rate) + 'Hz', 3000)
         if glo.sample_rate == 8000:
-            self.box_xdis.setCurrentIndex(4)
+            self.box_xdis.setCurrentIndex(2)
             # self.box_xdis.setEnabled(False)
             ...
         else:
-            self.box_xdis.setCurrentIndex(1)
+            self.box_xdis.setCurrentIndex(2)
             # self.box_xdis.setEnabled(True)
             ...
         ...
@@ -500,17 +522,18 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
         self.fftthread.start()
 
     def updateData(self, data_list):    # 更新数据及图表    --> 串口读取线程：串口读取数据时触发
-        glo.add_history(data_list)
+        glo.history2.put(data_list)
         # time1 = time.time()
         for i in range(len(self.chartFrameList)):
             if len(data_list[i]) > 0:
                 self.chartFrameList[i].addData(data_list[i])
-        ...
 
-    def updateEt(self, data_list):  # 更新文本框    --> 串口读取线程：串口读取数据时触发 # WAIT
-        self.et_text.append(str(data_list))
-        self.et_text.moveCursor(self.et_text.textCursor().End)
-        ...
+    def saveHistoryQueue(self): # 保存历史数据(Queue)
+        with open(self.saveFileName, 'ab') as f:
+            while not glo.history2.empty():
+                value = glo.history2.get()
+                self.datalength += len(value[0])
+                np.savetxt(f, np.transpose(value), fmt='%lf', delimiter=' ')
 
     #============================ 历史数据界面 ============================#
 
@@ -536,7 +559,7 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
     def initDATAFile(self):  # 历史数据界面初始化数据
         # 信号处理部分
         glo.YDIS = int(self.file_box_ydis.currentText())
-        glo.XDIS = int(self.file_box_xdis.currentText())
+        glo.XDIS = int(self.file_box_xdis.currentText()) * glo.sample_rate
         glo.isHighPassFilter = self.file_ck_high.isChecked()
         glo.isNotchFilter = self.file_ck_notch.isChecked()
         glo.isBandPassFilter = self.file_ck_band.isChecked()
@@ -559,7 +582,6 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
         self.group_params_file.setEnabled(True)
         if self.file_btn_draw.text() == '绘制':
             for i in range(2):
-                # self.chartFrameList[i].history = glo.history[i, :]
                 self.chartFrameList[i].drawFile()
             self.file_btn_draw.setText('重新绘制')
         else:
@@ -574,7 +596,7 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
             # chartFrame.chart.zoomReset()
         ...
 
-    def file_btn_delete_clicked(self):
+    def file_btn_delete_clicked(self):  # 删除区间按钮点击事件
         # self.file_btn_reset_clicked()
         delete_from = int(self.file_sb_delete_low.text())
         delete_to = int(self.file_sb_delete_high.text())
@@ -607,7 +629,7 @@ class MyWindow(QMainWindow):    # Ui_MainWindow):
             self.YDIS_SIGNAL.emit()
             self.statusBar.showMessage("Y轴显示范围设置为: " + str(glo.YDIS), 3000)
         elif self.sender().objectName() == 'file_box_xdis':
-            glo.XDIS = int(self.file_box_xdis.currentText())
+            glo.XDIS = int(self.file_box_xdis.currentText()) * glo.sample_rate
             # self.XDIS_SIGNAL.emit()
             self.statusBar.showMessage(
                 "X轴显示范围设置为: " + str(glo.XDIS) + '. 点击<重新绘制>按钮进行图像更新！', 3000)

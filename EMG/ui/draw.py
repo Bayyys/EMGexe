@@ -115,9 +115,9 @@ class Ui_Form(object):
         self.canvasLayout = QtWidgets.QVBoxLayout()
         self.canvasLayout.setObjectName("canvasLayout")
         self.verticalLayout_3.addLayout(self.canvasLayout)
-        self.plotWeight = QtWidgets.QVBoxLayout()
-        self.plotWeight.setObjectName("plotWeight")
-        self.verticalLayout_3.addLayout(self.plotWeight)
+        self.plotWidget = QtWidgets.QVBoxLayout()
+        self.plotWidget.setObjectName("plotWidget")
+        self.verticalLayout_3.addLayout(self.plotWidget)
         self.verticalLayout_2.addWidget(self.canvasFrame)
         self.verticalLayout.addWidget(self.chartFrame)
 

@@ -5,31 +5,15 @@ from time import sleep
 import pandas as pd
 import numpy as np
 from PyQt5.QtCore import QMutex
-
-
-scan = None  # 扫描 type: bool
-connected = None    # 连接 type: bool
-ser = None  # 串口对象 type: serial.Serial
-history = []   # 数据 type: list
-mutex_history = None    # 互斥锁    type: QMutex
-mutex_data = None   # 互斥锁    type: QMutex
-com = None  # 当前连接串口号 type: str
-isBaseline = True  # 是否开启基线 type: bool
-ifLowPassFilter = False  # 是否开启低通滤波 type: bool
-isHighPassFilter = False    # 是否开启高通滤波 type: bool
-isNotchFilter = False   # 是否开启陷波滤波 type: bool
-isBandPassFilter = False    # 是否开启带通滤波 type: bool
-XDIS = 8000  # X轴显示范围 type: int
-YDIS = 200000   # Y轴显示范围 type: int
-sample_rate = 1000  # 采样率 type: int
-
+import queue
 
 def __init__():
-    global scan, connected, ser, history, data, mutex_history, mutex_data, time, com, isBaseline, isLowPassFilter, isHighPassFilter, isNotchFilter, isBandPassFilter, XDIS, YDIS, sample_rate, channel_num, sos_low, sos_high, sos_notch, sos_band, lowFilter_low, highFilter_low, highFilter_high, notchFilter_cutoff, notchFilter_param, bandFilter_pass, bandFilter_stop, message, time_all, time_temp
+    global scan, connected, ser, history2, data, mutex_history, mutex_data, time, com, isBaseline, isLowPassFilter, isHighPassFilter, isNotchFilter, isBandPassFilter, XDIS, YDIS, sample_rate, channel_num, sos_low, sos_high, sos_notch, sos_band, lowFilter_low, highFilter_low, highFilter_high, notchFilter_cutoff, notchFilter_param, bandFilter_pass, bandFilter_stop, message, time_all, time_temp
     scan = False
     connected = False
     ser = None
     history = np.array([[], []])
+    history2 = queue.Queue()
     mutex_history = QMutex()
     mutex_data = QMutex()
     com = ""
@@ -156,11 +140,11 @@ def init_history():
 
 
 def add_history(value):
-    global history
+    global history, history2
     # add_data(value)
     mutex_history.lock()
     history = np.concatenate((history, value), axis=1)
-    # print(history)
+    history2.put(value)
     mutex_history.unlock()
 
 
@@ -177,16 +161,14 @@ def set_com(value):
     global com
     com = value
 
-
 def save_data(fileName, type):
     try:
-        if type == "CSV(*.csv)":
-            pd.DataFrame(history).to_csv(
-                fileName, mode='a', index=False, header=False)
-        elif type == "纯文本(*.txt)":
+        if type == "纯文本(*.txt)":
             np.savetxt(fileName, np.array(history), fmt='%lf', delimiter=' ',
                        newline='\n', header='', footer='', comments='# ', encoding=None)
-        # print(np.array(history))
+        elif type == "CSV(*.csv)":
+            pd.DataFrame(history).to_csv(
+                fileName, mode='a', index=False, header=False)
         print(np.array(history).shape)
         return True
     except Exception as e:
@@ -203,7 +185,9 @@ def load_data(fileName, type):
             history = np.array(data.values)
             return True
         elif type == "纯文本(*.txt)":
-            history = np.loadtxt(fileName, dtype=float)
+            # history = np.loadtxt(fileName, dtype=float)
+            history = np.transpose(np.loadtxt(fileName, dtype=float)) / 24.0
+            
             return True
         else:
             return False

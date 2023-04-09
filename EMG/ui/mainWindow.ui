@@ -58,8 +58,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>929</width>
-            <height>783</height>
+            <width>947</width>
+            <height>780</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -102,7 +102,7 @@
           <enum>QTabWidget::Rounded</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <property name="elideMode">
           <enum>Qt::ElideNone</enum>
@@ -173,13 +173,13 @@
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_2">
                  <property name="leftMargin">
-                  <number>9</number>
+                  <number>0</number>
                  </property>
                  <property name="topMargin">
                   <number>9</number>
                  </property>
                  <property name="rightMargin">
-                  <number>9</number>
+                  <number>0</number>
                  </property>
                  <property name="bottomMargin">
                   <number>9</number>
@@ -549,7 +549,7 @@
                        </sizepolicy>
                       </property>
                       <property name="currentIndex">
-                       <number>2</number>
+                       <number>6</number>
                       </property>
                       <item>
                        <property name="text">
@@ -686,7 +686,7 @@
                        </sizepolicy>
                       </property>
                       <property name="text">
-                       <string>时基X：(ms)</string>
+                       <string>时基X：(s)</string>
                       </property>
                      </widget>
                     </item>
@@ -699,7 +699,7 @@
                        </sizepolicy>
                       </property>
                       <property name="text">
-                       <string>幅度Y：+/-</string>
+                       <string>幅度Y：(uV)</string>
                       </property>
                      </widget>
                     </item>
@@ -712,31 +712,31 @@
                        </sizepolicy>
                       </property>
                       <property name="currentIndex">
-                       <number>1</number>
+                       <number>2</number>
                       </property>
                       <item>
                        <property name="text">
-                        <string>500</string>
+                        <string>0.5</string>
                        </property>
                       </item>
                       <item>
                        <property name="text">
-                        <string>1000</string>
+                        <string>1</string>
                        </property>
                       </item>
                       <item>
                        <property name="text">
-                        <string>2000</string>
+                        <string>2</string>
                        </property>
                       </item>
                       <item>
                        <property name="text">
-                        <string>5000</string>
+                        <string>3</string>
                        </property>
                       </item>
                       <item>
                        <property name="text">
-                        <string>8000</string>
+                        <string>4</string>
                        </property>
                       </item>
                      </widget>
@@ -781,6 +781,9 @@
                       </property>
                       <property name="text">
                        <string>陷波</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -833,6 +836,9 @@
                       <property name="text">
                        <string>高通</string>
                       </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
                      </widget>
                     </item>
                     <item row="4" column="3">
@@ -864,6 +870,9 @@
                       </property>
                       <property name="text">
                        <string>带通</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
@@ -1287,26 +1296,31 @@
                          </sizepolicy>
                         </property>
                         <property name="currentIndex">
-                         <number>1</number>
+                         <number>2</number>
                         </property>
                         <item>
                          <property name="text">
-                          <string>500</string>
+                          <string>0.5</string>
                          </property>
                         </item>
                         <item>
                          <property name="text">
-                          <string>1000</string>
+                          <string>1</string>
                          </property>
                         </item>
                         <item>
                          <property name="text">
-                          <string>2000</string>
+                          <string>2</string>
                          </property>
                         </item>
                         <item>
                          <property name="text">
-                          <string>5000</string>
+                          <string>3</string>
+                         </property>
+                        </item>
+                        <item>
+                         <property name="text">
+                          <string>4</string>
                          </property>
                         </item>
                        </widget>
@@ -1320,7 +1334,7 @@
                          </sizepolicy>
                         </property>
                         <property name="currentIndex">
-                         <number>7</number>
+                         <number>5</number>
                         </property>
                         <item>
                          <property name="text">
@@ -1412,7 +1426,7 @@
                          </sizepolicy>
                         </property>
                         <property name="text">
-                         <string>时基：(ms)</string>
+                         <string>时基：(s)</string>
                         </property>
                        </widget>
                       </item>
@@ -1765,7 +1779,7 @@
      <x>0</x>
      <y>0</y>
      <width>1260</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">

@@ -12,6 +12,7 @@ from ui.draw import Ui_Form
 import utils.globalParams as glo
 from matplotlib.lines import Line2D
 import pyqtgraph as pg
+from pyqtgraph import GraphicsWidget, AxisItem
 
 class FFTThread(QThread):
     fftSignal = pyqtSignal(np.ndarray, np.ndarray)
@@ -28,17 +29,14 @@ class FFTThread(QThread):
 
     def run(self):
         while(glo.connected):
-            # self.mutex.lock()
-            # if len(self.data) > 0:
-                # data = self.data
-                # self.data = []
-                # self.mutex.unlock()
-                # data = np.array(data)
-                # data = data[:, 1]
-            # data = data.astype(np.float)
-            if glo.history.shape[1] > glo.sample_rate:
+            if not glo.history2.empty():
+                # self.xdata = self.mainWin.chartFrameList[0].canvas.xdata[-4000:]
+                # self.ydata1 = self.mainWin.chartFrameList[0].canvas.ydata[-4000:]
+                # self.ydata2 = self.mainWin.chartFrameList[1].canvas.ydata[-4000:]
                 self.data1 = self.mainWin.chartFrameList[0].canvas.ydata[-4000:]
                 self.data2 = self.mainWin.chartFrameList[1].canvas.ydata[-4000:]
+                if self.data1.shape[0] < 4000:
+                    continue
                 
                 self.data1 = self.data1 - np.mean(self.data1)
                 self.data1 = self.data1 * np.hamming(len(self.data1))
@@ -60,39 +58,37 @@ class FFTThread(QThread):
                 xdata = np.array([self.xdata1, self.xdata2])
                 ydata = np.array([self.ydata1, self.ydata2])
                 self.fftSignal.emit(xdata, ydata)
-                time_all = int(glo.history.shape[1] / glo.sample_rate)
-                self.mainWin.lb_connect.setText('Time: ' + str(time_all) + 's')
+                # time_all = int(glo.history.shape[1] / glo.sample_rate)
+                # self.mainWin.lb_connect.setText('Time: ' + str(time_all) + 's')
             # else:
                 # self.mutex.unlock()
-            time.sleep(0.5)
+            time.sleep(0.05)
 
 # 绘制 频谱图
-class FFTCanvas(FigureCanvas):
+class FFTCanvas(pg.PlotWidget):
+
     def __init__(self, parent=None):
-        self.fig, self.ax = plt.subplots()
-        self.ax.set_xlim(0, 100)
-        self.ax.set_ylim(0, 100)
-        self.line1 = Line2D([], [])
-        self.line2 = Line2D([], [])
-        self.line2.set_color('orange')
-        self.ax.add_line(self.line1)
-        self.ax.add_line(self.line2)
-        self.fig.set_constrained_layout(True)   # 自动调整子图间距
-        FigureCanvas.__init__(self, self.fig)
-        self.setParent(parent)
-        FigureCanvas.setSizePolicy(self, QSizePolicy.Expanding, QSizePolicy.Expanding)
-        FigureCanvas.updateGeometry(self)
+        super().__init__()
+        self.mainWin = parent
+        # self.curve1 = self.plot(np.array([1, 2, 3]), np.array([1, 2, 3]), pen='r')
+        # self.curve2maximum recursion depth exceeded = self.plot([0], [0], pen='b')
+        self.initData()
+        ...
+
+    def initData(self):
+        # self.getPlotItem().addLegend(offset=(0, 10))
+        self.curve1 = self.plot(pen='r', name='CH 1')
+        self.curve2 = self.plot(pen='b', name='CH 2')
+        self.setRange(xRange=[0, 100], yRange=[0, 100])
 
     def updateFFT(self, xdata, ydata):
-        self.line1.set_data(xdata[0], ydata[0])
-        self.line2.set_data(xdata[1], ydata[1])
-        self.draw()
+        self.curve1.setData(xdata[0], ydata[0])
+        self.curve2.setData(xdata[1], ydata[1])
 
 class MyPlotCanvasFile(pg.PlotWidget):
-    XMAX = 16000
+    XMAX = 32000
     xdata = np.array([])
     ydata = np.array([])
-    Ydis = 0
 
     def __init__(self, parent=None):
         super().__init__()
@@ -100,13 +96,16 @@ class MyPlotCanvasFile(pg.PlotWidget):
         self.initData()
 
     def initData(self):
-        self.xdata = np.arange(0, self.XMAX/glo.sample_rate, 1/glo.sample_rate)
+
+        self.setLabel('left', 'Amplitude', units='V')
+        self.setLabel('bottom', 'Time', units='s')
+        self.getPlotItem().getAxis('bottom').enableAutoSIPrefix(False)
+        self.getPlotItem().getAxis('bottom').setScale(1 / glo.sample_rate)  # 单位放缩: 1s = 1 / 采样率
+        self.getPlotItem().getAxis('left').setScale(1 / 1_000_000)  # 单位放缩: 1μV
+        self.xdata = np.arange(0, self.XMAX, 1)
         self.ydata = np.zeros(self.XMAX)
         self.curve = self.plot(self.xdata, self.ydata, pen='k')
         self.curve.setPos(0, 0)
-        self.setLabel('left', 'Amplitude', units='μV')
-        self.setLabel('bottom', 'Time', units='s')
-        # self.setLabels(bottom=('Time', 's'), left=('Amplitude', 'μV'))
 
     def zoomReset(self):
         self.autoRange()
@@ -119,17 +118,17 @@ class MyPlotCanvasFile(pg.PlotWidget):
         except:
             ...
 
-class drawFrameFile(QFrame):    #, Ui_Form):
+class drawFrameFile(QFrame, Ui_Form):    #, Ui_Form):
     history = np.array([])  # 历史数据
 
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
-        # self.setupUi(self)
-        try:
-            self.ui = uic.loadUi('ui/draw.ui', self)
-        except:
-            self.ui = uic.loadUi('draw.ui', self)
+        self.setupUi(self)
+        # try:
+        #     self.ui = uic.loadUi('ui/draw.ui', self)
+        # except:
+        #     self.ui = uic.loadUi('draw.ui', self)
         self.initUI()
 
     def initUI(self):
@@ -145,8 +144,7 @@ class drawFrameFile(QFrame):    #, Ui_Form):
         if glo.isBaseline:
             self.canvas.ydata = detrend(self.canvas.ydata, type='linear')
             ...
-        self.canvas.xdata = np.arange(0, self.history.size, 1) / glo.sample_rate
-        print(self.canvas.xdata.shape)
+        self.canvas.xdata = np.arange(0, self.history.size, 1)
         self.lb_max.setText(str(np.round(max(self.canvas.ydata), 2)))
         self.lb_min.setText(str(np.round(min(self.canvas.ydata), 2)))
         self.lb_rms.setText(str(np.round(np.sqrt(np.mean(self.canvas.ydata ** 2)), 2)))
@@ -180,9 +178,7 @@ class drawFrameFile(QFrame):    #, Ui_Form):
         ...
 
     def updateSampleRate(self):
-        self.canvas.xdata = np.arange(0, self.history.size, 1) / glo.sample_rate
-        print(self.canvas.xdata.shape)
-        self.canvas.curve.setData(self.canvas.xdata, self.canvas.ydata)
+        self.canvas.getPlotItem().getAxis('bottom').setScale(1 / glo.sample_rate)  # 单位放缩: 1s = 1 / 采样率
 
 
     def keyPressEvent(self, e) -> None:  # 键盘事件
@@ -195,10 +191,10 @@ class drawFrameFile(QFrame):    #, Ui_Form):
         ...
 
 class MyPlotCanvas(pg.PlotWidget):
-    XMAX = 16000
-    Xdis = 1000
+    XMAX = 32000
     xdata = np.array([])
     ydata = np.array([])
+    XDIS = 8000
 
     def __init__(self, parent=None):
         super().__init__()
@@ -206,15 +202,19 @@ class MyPlotCanvas(pg.PlotWidget):
         self.initData()
 
     def initData(self):
+        # 设置坐标轴Label
         self.setLabel('left', 'Amplitude', units='V')
         self.setLabel('bottom', 'Time', units='s')
-        self.xdata = np.arange(0, self.XMAX / glo.sample_rate, 1 / glo.sample_rate)
+        self.getPlotItem().getAxis('bottom').enableAutoSIPrefix(False)
+        self.getPlotItem().getAxis('bottom').setScale(1 / glo.sample_rate)  # 单位放缩: 1s = 1 / 采样率
+        self.getPlotItem().getAxis('left').setScale(1 / 1_000_000)  # 单位放缩: 1μV
+        self.xdata = np.arange(0, self.XMAX, 1)
         self.ydata = np.zeros(self.XMAX)
         self.curve = self.plot(self.xdata, self.ydata, pen='k')
         self.curve.setPos(0, 0)
     
     def zoomReset(self):
-        self.autoRange()
+        self.enableAutoRange()
 
 class drawFrame(QFrame, Ui_Form):
     history = np.array([])  # 待处理数据部分的原始数据, 保持长度为当前采样率
@@ -225,11 +225,11 @@ class drawFrame(QFrame, Ui_Form):
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
-        # self.setupUi(self)
-        try:
-            self.ui = uic.loadUi('ui/draw.ui', self)
-        except:
-            self.ui = uic.loadUi('draw.ui', self)
+        self.setupUi(self)
+        # try:
+        #     self.ui = uic.loadUi('ui/draw.ui', self)
+        # except:
+        #     self.ui = uic.loadUi('draw.ui', self)
         self.initUI()
 
     def initUI(self):
@@ -284,13 +284,13 @@ class drawFrame(QFrame, Ui_Form):
         # 更新绘图数据
         self.canvas.ydata[:-len_data] = self.canvas.ydata[len_data:]
         self.canvas.ydata[-len_data:] = data
-        self.canvas.curve.setData(self.canvas.xdata, self.canvas.ydata)
+        self.canvas.curve.setData(self.canvas.xdata[-self.canvas.XDIS:], self.canvas.ydata[-self.canvas.XDIS:])
 
 
-        self.lb_min.setText(str(np.round(min(self.canvas.ydata[-500:]), 3)))
-        self.lb_max.setText(str(np.round(max(self.canvas.ydata[-500:]), 3)))
+        self.lb_min.setText(str(np.round(min(self.canvas.ydata[-self.canvas.XDIS:]), 3)))
+        self.lb_max.setText(str(np.round(max(self.canvas.ydata[-self.canvas.XDIS:]), 3)))
         self.lb_rms.setText(
-            str(np.round(np.sqrt(np.mean(self.canvas.ydata[-500:]**2)), 3)))
+            str(np.round(np.sqrt(np.mean(self.canvas.ydata[-self.canvas.XDIS:]**2)), 3)))
         ...
 
     def addData(self, data):    # 向待处理数据中添加测取数据
@@ -300,9 +300,11 @@ class drawFrame(QFrame, Ui_Form):
         self.data_add_mutex.unlock()
 
     def updateYlim(self):   # 更新Y轴范围
-        self.canvas.setYRange = (-glo.YDIS, glo.YDIS)
+        print("updateYlim")
+        self.canvas.setRange(yRange=[-glo.YDIS, glo.YDIS])
 
     def updateXlim(self):  # 更新X轴范围    # TODO
+        self.canvas.XDIS = glo.XDIS
         ...
 
     def keyPressEvent(self, e) -> None: # 键盘事件
