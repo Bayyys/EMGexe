@@ -18,8 +18,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
-        # self.ui = uic.loadUi('ui/mainWindow.ui', self)
+        # self.setupUi(self)
+        self.ui = uic.loadUi('ui/mainWindow.ui', self)
         self.initDATA()  # 初始化数据
         self.initUI()   # 初始化UI界面
 
@@ -163,11 +163,9 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     def initChartFrame(self):   # 初始化图表 Frame
         for i in range(2):
             chartFrameItem = drawFrame(self)
+            chartFrameItem.lb_num.setText('CH'+str(i+1))
             self.XDIS_SIGNAL.connect(chartFrameItem.updateXlim)
             self.YDIS_SIGNAL.connect(chartFrameItem.updateYlim)
-            if i == 2:
-                chartFrameItem.canvas.line.set_color('orange')
-            # chartFrameItem.lb_min.setText(str(i))
             self.chartFrameList.append(chartFrameItem)
             self.layoutChart.addWidget(chartFrameItem)
 

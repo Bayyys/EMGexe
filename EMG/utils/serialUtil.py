@@ -46,8 +46,10 @@ class serialRead2(QThread):  # 读取串口数据线程(两通道)
     dateReadUpdate = pyqtSignal(list)
     rest = b''
     index_1 = 0 # 1号通道数据起始位置
-    index_2 = 4    # 2号通道数据起始位置
-    index_3 = 8    # 3号通道数据起始位置
+    index_2 = 4 # 2号通道数据起始位置
+    index_3 = 8 # 3号通道数据起始位置
+    index_p = 8 # p通道连接状态起始位置
+    index_n = 9 # n通道连接状态起始位置
     
     def run(self):
         print("serialRead start")
@@ -78,13 +80,15 @@ class serialRead2(QThread):  # 读取串口数据线程(两通道)
                 index_s = data.find(b'\xa5Z') + 4
                 index_e = index_s + 10
                 get = data[index_s: index_e]
-                num1 = self.bytestoFloat(get[self.index_1: self.index_2])
-                if num1 > 100000:
+                if get[self.index_p] & 0x01 or get[self.index_n] & 0x01:
                     num1 = 0
+                else:
+                    num1 = self.bytestoFloat(get[self.index_1: self.index_2])
                 num_list[0].append(num1)
-                num2 = self.bytestoFloat(get[self.index_2: self.index_3])
-                if num2 > 100000:
+                if get[self.index_p] & 0x02 or get[self.index_n] & 0x02:
                     num2 = 0
+                else:
+                    num2 = self.bytestoFloat(get[self.index_2: self.index_3])
                 num_list[1].append(num2)
                 data = data[index_e:]
             else:
@@ -165,7 +169,7 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)  # TODO: 根据
                 index_s = data.find(b'\xa5Z') + 4
                 index_e = index_s + 136
                 get = data[index_s: index_e]
-                if get[self.index_p] & 0x01 and get[self.index_n] & 0x01:
+                if get[self.index_p] & 0x01 or get[self.index_n] & 0x01:
                     num1 = 0
                 else:
                     num1 = self.bytestoFloat(get[self.index_1: self.index_2])

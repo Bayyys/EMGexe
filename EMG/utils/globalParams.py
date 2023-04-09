@@ -45,7 +45,6 @@ def __init__():
     time_all = 0
     time_temp = 0
 
-
 def sendMessage(state, connect='usb', sample_rate=1000, channel=32):
     '''发送命令
     state: start/stop
@@ -70,7 +69,7 @@ def sendMessage(state, connect='usb', sample_rate=1000, channel=32):
             ser.write(message['stop'])
             sleep(0.1)
     else:
-        print('error')
+        print('Send Message Error!')
 
 
 def initFilterParams():
@@ -172,7 +171,7 @@ def save_data(fileName, type):
         print(np.array(history).shape)
         return True
     except Exception as e:
-        print("error")
+        print("Save Data Error!")
         return False
     ...
 
@@ -192,7 +191,7 @@ def load_data(fileName, type):
         else:
             return False
     except Exception as e:
-        print("error")
+        print("Load Data Error!")
         return False
     ...
 
