@@ -88,7 +88,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="plotFrame">
+    <widget class="QFrame" name="plotFrame2">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -108,10 +108,32 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item>
-       <layout class="QHBoxLayout" name="plotLayout"/>
-      </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QScrollArea" name="plotFrame">
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAsNeeded</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="plotLayout">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>679</width>
+        <height>232</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <layout class="QHBoxLayout" name="plotLayout2"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item alignment="Qt::AlignHCenter">
@@ -252,25 +274,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btn_tail">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>30</width>
-          <height>23</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>&gt;&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="btn_next">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -289,6 +292,25 @@
         </property>
         <property name="flat">
          <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_tail">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>23</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>&gt;&gt;</string>
         </property>
        </widget>
       </item>

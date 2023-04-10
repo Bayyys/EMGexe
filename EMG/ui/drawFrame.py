@@ -126,6 +126,12 @@ class drawTabFrame(QFrame, Ui_canvasTab):
             self.ui = uic.loadUi('canvasTab.ui', self)
         self.tabCanvasList = []
         self.findNum = 0
+        self.fromNum = 1
+        self.toNum = 3
+        self.fresh_state = True
+        self.arrayLen = 50
+        self.tabDataList = np.zeros((self.arrayLen, glo.sample_rate))
+        print('self.tabDataList.shape:', self.tabDataList.shape)
         self.initUI()
         # self.initTimer()
 
@@ -135,7 +141,7 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         for i in range(3):
             tabCanvas = MyPlotCanvas()
             tabCanvas.getPlotItem().setTitle(' ')
-            self.plotLayout.addWidget(tabCanvas)
+            self.plotLayout2.addWidget(tabCanvas)
             self.tabCanvasList.append(tabCanvas)
 
         self.btn_1.clicked.connect(self.btn_1_clicked)
@@ -154,6 +160,15 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         self.timer.timeout.connect(self.updateCanvas)
         self.timer.start(100)
 
+    def canvasTabDraw(self, fromNum, toNum):    # 画布Tab绘图
+        size = toNum - fromNum + 1
+        for i in range(size):
+            self.tabCanvasList[i].getPlotItem().clearPlots()  # 清空画布Tab
+            self.tabCanvasList[i].getPlotItem().setTitle('第'+str(fromNum+i)+'个标记数据段')
+            self.tabCanvasList[i].addItem(pg.PlotCurveItem(np.arange(0, glo.sample_rate, 1), self.tabDataList[(fromNum+i-1)%20], pen=pg.mkPen('k', width=1.5)))  # 添加画布Tab数据
+        self.lb_all.setText('共 '+str(self.findNum))
+        self.et_page.setText(str(fromNum) + '-' + str(toNum))
+
     def updateCanvas(self):
         self.count += 1
         print("test:" + str(self.count))
@@ -167,35 +182,91 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         ...
 
     def btn_head_clicked(self):
-        print('btn_head_clicked')
+        self.fresh_state = False
+        if self.findNum > 3:
+            self.fromNum = 1
+            self.toNum = 3
+        else:
+            self.fromNum = 1
+            self.toNum = self.findNum
+        self.canvasTabDraw(1, self.findNum)
         ...
 
     def btn_tail_clicked(self):
-        print('btn_tail_clicked')
+        self.fresh_state = True
+        if self.findNum > 3:
+            self.fromNum = self.findNum - 2
+            self.toNum = self.findNum
+        else:
+            self.fromNum = 1
+            self.toNum = self.findNum
+        self.canvasTabDraw(1, self.findNum)
         ...
 
     def btn_pre_clicked(self):
-        print('btn_pre_clicked')
+        self.fresh_state = False
+        if self.fromNum > 3:
+            self.fromNum -= 1
+            self.toNum -= 1
+        else:
+            self.fromNum = 1
+            self.toNum = 3
+        self.canvasTabDraw(self.fromNum, self.toNum)
         ...
 
     def btn_next_clicked(self):
-        print('btn_next_clicked')
+        self.fresh_state = False
+        if self.fromNum < self.findNum - 2:
+            self.fromNum += 1
+            self.toNum += 1
+        else:
+            self.fromNum = self.findNum - 2
+            self.toNum = self.findNum
+        self.canvasTabDraw(self.fromNum, self.toNum)
         ...
 
-    def et_page_returnPressed(self):
-        print('et_page_returnPressed:', self.et_page.text())
+    def et_page_returnPressed(self):    # WAIT
+        self.fresh_state = False
+        self.fromNum = int(self.sp_page.text()) - 1
+        self.toNum = self.fromNum + 2
+        if self.fromNum < 1:
+            self.fromNum = 1
+            self.toNum = 3
+        if self.toNum > self.findNum:
+            self.toNum = self.findNum
+        self.canvasTabDraw(self.fromNum, self.toNum)
         ...
 
-    def sb_page_valueChanged(self):
-        print('sb_page_valueChanged:', self.sb_page.value())
+    def sb_page_valueChanged(self): # WAIT
+        self.fresh_state = False
+        self.fromNum = int(self.sp_page.text()) - 1
+        self.toNum = self.fromNum + 2
+        if self.fromNum < 1:
+            self.fromNum = 1
+            self.toNum = 3
+        if self.toNum > self.findNum:
+            self.toNum = self.findNum
+        self.canvasTabDraw(self.fromNum, self.toNum)
         ...
 
     def btn_to_clicked(self):
-        print('btn_to_clicked: ', self.sb_page.text())
+        self.fresh_state = False
+        self.fromNum = int(self.sb_page.text()) - 1
+        self.toNum = self.fromNum + 2
+        if self.fromNum < 1:
+            self.fromNum = 1
+            self.toNum = 3
+        if self.toNum > self.findNum:
+            self.toNum = self.findNum
+        self.canvasTabDraw(self.fromNum, self.toNum)
         ...
-    
-    def flush(self):
-        ...
+
+    def btn_reset_clicked(self):
+        self.fresh_state = True
+        self.fromNum = self.findNum - 2
+        if self.fromNum < 1:
+            self.fromNum = 1
+        self.toNum = self.findNum
 
 class drawFrameFile(QFrame, Ui_Form):    #, Ui_Form):
     history = np.array([])  # 历史数据
@@ -365,24 +436,25 @@ class drawFrame(QFrame, Ui_Form):
         # 数据原点移动
         self.pos += len_data
         self.canvas.curve.setPos(self.pos - self.canvas.XDIS, 0)
-        print(self.canvas.curve.pos() / 8000)
-
-        if max(abs(data)) > 6000 and not self.tab_flag and self.test_flag:
-            print("标记数据段开始")
+        
+        if max(abs(data)) > 6000 and not self.tab_flag and self.test_flag:  # 数据小窗判断
             self.tab_flag = True
             ...
-
-        if self.tab_flag:   # 如果标记数据段 --> 添加标记数据段
+        
+        if self.tab_flag:   # 数据小窗显示
             self.data_tab = np.append(self.data_tab, data)
             if self.data_tab.size > glo.sample_rate:
-                self.tab_flag = False
-                print("标记数据段结束")
-                self.canvasTab.tabCanvasList[self.Mo].getPlotItem().clearPlots()  # 清空画布Tab
-                self.canvasTab.tabCanvasList[self.Mo].addItem(pg.PlotCurveItem(np.arange(0, glo.sample_rate, 1), self.data_tab[-glo.sample_rate:], pen=pg.mkPen('k', width=1.5)))  # 添加画布Tab数据
-                self.canvasTab.findNum += 1
-                self.canvasTab.tabCanvasList[self.Mo].getPlotItem().setTitle('第'+str(self.canvasTab.findNum)+'个标记数据段')
-                self.canvasTab.lb_all.setText('共 '+str(self.canvasTab.findNum))
-                self.canvasTab.et_page.setText(str(self.pos))
+                self.tab_flag = False   # 修改识别标记
+                self.canvasTab.findNum += 1 # 修改标记数
+                self.canvasTab.tabDataList[(self.canvasTab.findNum - 1) % 20] = self.data_tab[-glo.sample_rate:]   # 添加数据到Tab数据列表(循环存储: 0-9)
+                # 实时绘图
+                if self.canvasTab.fresh_state:
+                    if self.canvasTab.findNum > 2:
+                        self.canvasTab.canvasTabDraw(self.canvasTab.findNum - 2, self.canvasTab.findNum)
+                        self.canvasTab.fromNum += 1
+                        self.canvasTab.toNum += 1
+                    else:
+                        self.canvasTab.canvasTabDraw(1, self.canvasTab.findNum)
 
                 self.Mo = (self.Mo + 1) % 3
                 self.data_tab = np.array([])    # 清空标记数据段
@@ -398,7 +470,7 @@ class drawFrame(QFrame, Ui_Form):
         self.lb_rms.setText(
             str(np.round(np.sqrt(np.mean(self.canvas.ydata[-self.canvas.XDIS:]**2)), 3)))
         ...
-
+    
     def addData(self, data):    # 向待处理数据中添加测取数据
         # 待处理数据添加(互斥锁)
         self.data_add_mutex.lock()
