@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import sosfilt, detrend
 from PyQt5.QtCore import Qt, QTimer, QThread, QMutex, pyqtSignal
-from PyQt5.QtWidgets import QApplication, QSizePolicy, QFrame
+from PyQt5.QtWidgets import QApplication, QSizePolicy, QFrame, QPushButton
 from PyQt5 import uic
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from ui.draw import Ui_Form
@@ -16,7 +16,9 @@ import pyqtgraph as pg
 from pyqtgraph import GraphicsWidget, AxisItem
 
 class FFTThread(QThread):
+    '''FFT线程'''
     fftSignal = pyqtSignal(np.ndarray, np.ndarray)
+
     def __init__(self, mainWin):
         super().__init__()
         self.mainWin = mainWin
@@ -30,7 +32,7 @@ class FFTThread(QThread):
 
     def run(self):
         while(glo.connected):
-            if not glo.history2.empty():
+            if not glo.history.empty():
                 # self.xdata = self.mainWin.chartFrameList[0].canvas.xdata[-4000:]
                 # self.ydata1 = self.mainWin.chartFrameList[0].canvas.ydata[-4000:]
                 # self.ydata2 = self.mainWin.chartFrameList[1].canvas.ydata[-4000:]
@@ -67,17 +69,14 @@ class FFTThread(QThread):
 
 # 绘制 频谱图
 class FFTCanvas(pg.PlotWidget):
-
+    '''FFT 绘图 canvas'''
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
-        # self.curve1 = self.plot(np.array([1, 2, 3]), np.array([1, 2, 3]), pen='r')
-        # self.curve2maximum recursion depth exceeded = self.plot([0], [0], pen='b')
         self.initData()
         ...
 
     def initData(self):
-        # self.getPlotItem().addLegend(offset=(0, 10))
         self.curve1 = self.plot(pen='r', name='CH 1')
         self.curve2 = self.plot(pen='b', name='CH 2')
         self.setRange(xRange=[0, 100], yRange=[0, 100])
@@ -87,101 +86,128 @@ class FFTCanvas(pg.PlotWidget):
         self.curve2.setData(xdata[1], ydata[1])
 
 class MyPlotCanvas(pg.PlotWidget):
-    XMAX = 32000
-    xdata = np.array([])
-    ydata = np.array([])
-    XDIS = 16000
+    '''绘图 canvas
+    
+    Attributes:
+        XMAX: x轴最大值
+        xdata: x轴数据
+        ydata: y轴数据
+        XDIS: x轴显示范围
+    '''
+    
 
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
+        self.XMAX = 32000   # x轴最大值
+        self.xdata = np.array([])   # x轴数据
+        self.ydata = np.array([])   # y轴数据
+        self.XDIS = 16000   # x轴显示范围
         self.initData()
 
     def initData(self):
         # 设置坐标轴Label
         self.setLabel('left', 'Amplitude(uV)')
         self.setLabel('bottom', 'Time(s)')
-        self.getPlotItem().getAxis('bottom').enableAutoSIPrefix(False)
+        self.getPlotItem().getAxis('bottom').enableAutoSIPrefix(False)  # 不自动缩放单位(横轴：时间)
         self.getPlotItem().getAxis('bottom').setScale(1 / glo.sample_rate)  # 单位放缩: 1s = 1 / 采样率
-        self.getPlotItem().getAxis('bottom').setTickSpacing(1, 0.5)
-        self.getPlotItem().getAxis('left').enableAutoSIPrefix(False)
+        self.getPlotItem().getAxis('bottom').setTickSpacing(1, 0.5) # 设置刻度间隔
+        self.getPlotItem().getAxis('left').enableAutoSIPrefix(False)    # 不自动缩放单位(纵轴：幅值)
         self.getPlotItem().getAxis('left').setScale(1) # / 1_000_000)  # 单位放缩: 1μV
         self.getPlotItem().getAxis('left').setStyle(autoReduceTextSpace=True)
-        self.xdata = np.arange(0, self.XMAX, 1)
-        self.ydata = np.zeros(self.XMAX)
-        self.curve = self.plot(self.xdata, self.ydata, pen='k')
-        self.curve.setPos(0, 0)
+        self.xdata = np.arange(0, self.XMAX, 1) # x轴数据
+        self.ydata = np.zeros(self.XMAX)    # y轴数据
+        self.curve = self.plot(self.xdata, self.ydata, pen='k')     # 曲线
+        self.curve.setPos(0, 0) # 设置曲线的起始位置(0, 0)
     
-    def zoomReset(self):
+    def zoomReset(self):    # 重置缩放
         self.enableAutoRange()
 
 class drawTabFrame(QFrame, Ui_canvasTab):
+    '''标记数据段绘图
+    
+    Attributes:
+        tabCanvasList: 用于存储tabCanvas的列表(三维)
+        findNum: 记录标记数据段的个数
+        fromNum: 记录标记数据段的绘图起始位置
+        toNum: 记录标记数据段的绘图结束位置
+        fresh_state: 记录是否刷新tabCanvas的状态
+        arrayLen: 用于存储tab数据的长度(实时)
+        tabDataList: 用于存储tab数据的列表(二维 arrayLen * sample_rate)
+        data_tab_point: # 存储标记数据段的坐标点(结束记录后存储)
+    '''
+
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
-        # self.setupUi(self)
-        try:
-            self.ui = uic.loadUi('ui/canvasTab.ui', self)
-        except:
-            self.ui = uic.loadUi('canvasTab.ui', self)
-        self.tabCanvasList = []
-        self.findNum = 0
-        self.fromNum = 1
-        self.toNum = 3
-        self.fresh_state = True
-        self.arrayLen = 50
-        self.tabDataList = np.zeros((self.arrayLen, glo.sample_rate))
-        print('self.tabDataList.shape:', self.tabDataList.shape)
+        self.setupUi(self)
+        # try:
+        #     self.ui = uic.loadUi('ui/canvasTab.ui', self)
+        # except:
+        #     self.ui = uic.loadUi('canvasTab.ui', self)
+        self.tabCanvasList = [] # 用于存储tabCanvas的列表(三维)
+        self.findNum = 0    # 记录标记数据段的个数
+        self.fromNum = 1    # 记录标记数据段的绘图起始位置
+        self.toNum = 3    # 记录标记数据段的绘图结束位置
+        self.fresh_state = True # 记录是否刷新tabCanvas的状态
+        self.arrayLen = 50  # 用于存储tab数据的长度(实时)
+        self.tabDataList = np.zeros((self.arrayLen, glo.sample_rate))   # 用于存储tab数据的列表(二维 arrayLen * sample_rate)
+        self.data_tab_point = np.array([])  # 存储标记数据段的坐标点(结束记录后存储)
         self.initUI()
-        # self.initTimer()
 
     def initUI(self):
-        self.buttonFrame.setVisible(False)
-        pg.setConfigOption('foreground', 'k')
+        self.buttonFrame.setVisible(False)  # 隐藏buttonFrame # WAIT
+        pg.setConfigOption('foreground', 'k')   # 设置前景色(绘图折线笔刷颜色) - 黑色
+
+        # 设置tabCanvas(三维)
         for i in range(3):
             tabCanvas = MyPlotCanvas()
             tabCanvas.getPlotItem().setTitle(' ')
             self.plotLayout2.addWidget(tabCanvas)
             self.tabCanvasList.append(tabCanvas)
 
-        self.btn_1.clicked.connect(self.btn_1_clicked)
-        self.btn_2.clicked.connect(self.btn_2_clicked)
-        self.btn_head.clicked.connect(self.btn_head_clicked)
-        self.btn_tail.clicked.connect(self.btn_tail_clicked)
-        self.btn_pre.clicked.connect(self.btn_pre_clicked)
-        self.btn_next.clicked.connect(self.btn_next_clicked)
-        self.et_page.returnPressed.connect(self.et_page_returnPressed)
-        self.sb_page.valueChanged.connect(self.sb_page_valueChanged)
-        self.btn_to.clicked.connect(self.btn_to_clicked)
+        self.btn_1.clicked.connect(self.btn_1_clicked)  # WAIT
+        self.btn_2.clicked.connect(self.btn_2_clicked)  # WAIT
+        self.btn_head.clicked.connect(self.btn_head_clicked)    # 头部节点
+        self.btn_tail.clicked.connect(self.btn_tail_clicked)    # 尾部节点
+        self.btn_pre.clicked.connect(self.btn_pre_clicked)  # 上一页
+        self.btn_next.clicked.connect(self.btn_next_clicked)    # 下一页
+        # self.et_page.returnPressed.connect(self.et_page_returnPressed)  # 跳转到指定页_键入
+        self.btn_to.clicked.connect(self.btn_to_clicked)    # 跳转到指定页_点击
+        self.sb_page.editingFinished.connect(self.sb_page_editingFinished)  # 显示当前页码范围 
 
-    def initTimer(self):
+    def initTimer(self): # WAIT
         self.count = 0
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateCanvas)
         self.timer.start(100)
 
     def canvasTabDraw(self, fromNum, toNum):    # 画布Tab绘图
+        '''画布Tab绘图
+        fromNum: 绘图起始位置
+        toNum: 绘图结束位置
+        '''
         size = toNum - fromNum + 1
         for i in range(size):
             self.tabCanvasList[i].getPlotItem().clearPlots()  # 清空画布Tab
             self.tabCanvasList[i].getPlotItem().setTitle('第'+str(fromNum+i)+'个标记数据段')
-            self.tabCanvasList[i].addItem(pg.PlotCurveItem(np.arange(0, glo.sample_rate, 1), self.tabDataList[(fromNum+i-1)%20], pen=pg.mkPen('k', width=1.5)))  # 添加画布Tab数据
-        self.lb_all.setText('共 '+str(self.findNum))
-        self.et_page.setText(str(fromNum) + '-' + str(toNum))
+            self.tabCanvasList[i].addItem(pg.PlotCurveItem(np.arange(self.data_tab_point[fromNum+i-1], self.data_tab_point[fromNum+i-1] + glo.sample_rate, 1), self.tabDataList[(fromNum+i-1)%20], pen=pg.mkPen('k', width=1.5)))  # 添加画布Tab数据
+        
+        self.lb_page.setText(str(fromNum) + '-' + str(toNum))
 
-    def updateCanvas(self):
+    def updateCanvas(self): # WAIT
         self.count += 1
         print("test:" + str(self.count))
 
-    def btn_1_clicked(self):
+    def btn_1_clicked(self):    # WAIT
         print('btn_1_clicked')
         ...
 
-    def btn_2_clicked(self):
+    def btn_2_clicked(self):    # WAIT
         print('btn_2_clicked')
         ...
 
-    def btn_head_clicked(self):
+    def btn_head_clicked(self): # 跳转到头部节点
         self.fresh_state = False
         if self.findNum > 3:
             self.fromNum = 1
@@ -192,7 +218,7 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         self.canvasTabDraw(1, self.findNum)
         ...
 
-    def btn_tail_clicked(self):
+    def btn_tail_clicked(self): # 跳转到尾部节点
         self.fresh_state = True
         if self.findNum > 3:
             self.fromNum = self.findNum - 2
@@ -200,10 +226,10 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         else:
             self.fromNum = 1
             self.toNum = self.findNum
-        self.canvasTabDraw(1, self.findNum)
+        self.canvasTabDraw(self.fromNum, self.findNum)
         ...
 
-    def btn_pre_clicked(self):
+    def btn_pre_clicked(self):  # 上一页
         self.fresh_state = False
         if self.fromNum > 3:
             self.fromNum -= 1
@@ -214,7 +240,7 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         self.canvasTabDraw(self.fromNum, self.toNum)
         ...
 
-    def btn_next_clicked(self):
+    def btn_next_clicked(self): # 下一页
         self.fresh_state = False
         if self.fromNum < self.findNum - 2:
             self.fromNum += 1
@@ -226,30 +252,18 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         ...
 
     def et_page_returnPressed(self):    # WAIT
-        self.fresh_state = False
-        self.fromNum = int(self.sp_page.text()) - 1
-        self.toNum = self.fromNum + 2
-        if self.fromNum < 1:
-            self.fromNum = 1
-            self.toNum = 3
-        if self.toNum > self.findNum:
-            self.toNum = self.findNum
-        self.canvasTabDraw(self.fromNum, self.toNum)
+        # self.fresh_state = False
+        # self.fromNum = int(self.sb_page.text()) - 1
+        # self.toNum = self.fromNum + 2
+        # if self.fromNum < 1:
+        #     self.fromNum = 1
+        #     self.toNum = 3
+        # if self.toNum > self.findNum:
+        #     self.toNum = self.findNum
+        # self.canvasTabDraw(self.fromNum, self.toNum)
         ...
 
-    def sb_page_valueChanged(self): # WAIT
-        self.fresh_state = False
-        self.fromNum = int(self.sp_page.text()) - 1
-        self.toNum = self.fromNum + 2
-        if self.fromNum < 1:
-            self.fromNum = 1
-            self.toNum = 3
-        if self.toNum > self.findNum:
-            self.toNum = self.findNum
-        self.canvasTabDraw(self.fromNum, self.toNum)
-        ...
-
-    def btn_to_clicked(self):
+    def sb_page_editingFinished(self):  # 跳转页码_键入
         self.fresh_state = False
         self.fromNum = int(self.sb_page.text()) - 1
         self.toNum = self.fromNum + 2
@@ -261,36 +275,50 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         self.canvasTabDraw(self.fromNum, self.toNum)
         ...
 
-    def btn_reset_clicked(self):
-        self.fresh_state = True
-        self.fromNum = self.findNum - 2
+    def btn_to_clicked(self):   # 跳转页码_点击 # WAIT
+        self.fresh_state = False
+        self.fromNum = int(self.sb_page.text()) - 1
+        self.toNum = self.fromNum + 2
         if self.fromNum < 1:
             self.fromNum = 1
-        self.toNum = self.findNum
+            self.toNum = 3
+        if self.toNum > self.findNum:
+            self.toNum = self.findNum
+        self.canvasTabDraw(self.fromNum, self.toNum)
+        ...
 
 class drawFrameFile(QFrame, Ui_Form):    #, Ui_Form):
-    history = np.array([])  # 历史数据
+    '''文件绘图窗口
+    
+    Attributes:
+        history: 历史数据
+    '''
 
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
-        # self.setupUi(self)
-        try:
-            self.ui = uic.loadUi('ui/draw.ui', self)
-        except:
-            self.ui = uic.loadUi('draw.ui', self)
+        self.setupUi(self)
+        # try:
+        #     self.ui = uic.loadUi('ui/draw.ui', self)
+        # except:
+        #     self.ui = uic.loadUi('draw.ui', self)
+        self.history = np.array([]) # 历史数据
         self.initUI()
 
     def initUI(self):
-        self.btn_reset.clicked.connect(lambda: self.canvas.zoomReset())
-        self.btn_close.clicked.connect(lambda: self.setVisible(False))
+        self.btn_reset.clicked.connect(lambda: self.canvas.zoomReset()) # 重置缩放
+        self.btn_close.clicked.connect(lambda: self.setVisible(False))  # 关闭窗口
+        self.btn_tab.setVisible(False)  # 标签显示/隐藏按钮
+        self.btn_test.setVisible(False)    # 识别/停止识别按钮
 
+        # 添加 canvas 绘图区
         self.canvas = MyPlotCanvas(self.mainWin)
+        self.canvas.getPlotItem().getAxis('bottom').setTickSpacing()
         self.canvasLayout.addWidget(self.canvas)
         self.canvasTabFrame.setVisible(False)
         ...
 
-    def drawFile(self):
+    def drawFile(self): # 绘制文件(首次)
         self.canvas.ydata = self.history.copy()
         if glo.isBaseline:
             self.canvas.ydata = detrend(self.canvas.ydata, type='linear')
@@ -300,8 +328,9 @@ class drawFrameFile(QFrame, Ui_Form):    #, Ui_Form):
         self.lb_min.setText(str(np.round(min(self.canvas.ydata), 2)))
         self.lb_rms.setText(str(np.round(np.sqrt(np.mean(self.canvas.ydata ** 2)), 2)))
         self.canvas.curve.setData(self.canvas.xdata, self.canvas.ydata)
+        self.drawFileAgain()
     
-    def drawFileAgain(self):
+    def drawFileAgain(self):    # 绘制文件(再次)
         data_process = self.history.copy()
         if glo.isBaseline:
             try:
@@ -323,14 +352,16 @@ class drawFrameFile(QFrame, Ui_Form):    #, Ui_Form):
         self.canvas.curve.setData(self.canvas.xdata, data_process)
     
     def updateYlim(self):   # 更新Y轴范围
+        '''更新Y轴范围'''
         self.canvas.setYRange(-glo.YDIS, glo.YDIS)
 
     def updateXlim(self):  # 更新X轴范围
+        '''更新X轴范围'''
         ...
 
-    def updateSampleRate(self):
+    def updateSampleRate(self): # 更新采样率
+        '''更新采样率'''
         self.canvas.getPlotItem().getAxis('bottom').setScale(1 / glo.sample_rate)  # 单位放缩: 1s = 1 / 采样率
-
 
     def keyPressEvent(self, e) -> None:  # 键盘事件
         if e.key() == Qt.Key_Enter:
@@ -342,25 +373,37 @@ class drawFrameFile(QFrame, Ui_Form):    #, Ui_Form):
         ...
 
 class drawFrame(QFrame, Ui_Form):
-    history = np.array([])  # 待处理数据部分的原始数据, 保持长度为当前采样率
-    data_add = np.array([])  # 待处理数据部分长度，防止处理过程中数据堆积
-    data_add_mutex = QMutex()   # 待处理数据互斥锁
-    pos = 0 # 当前数据原点偏移位置
-    data_tab = np.array([])  # 标记数据段数组
-    data_tab_mutex = QMutex()   # 标记数据段互斥锁
-    tab_flag = False    # 标记数据段标志
-    test_flag = False    # 标记数据段测试标志
-    Mo = 0
-
+    '''实时绘图窗口
     
+    Attributes:
+        history: 待处理数据部分的原始数据, 保持长度为当前采样率
+        data_add: 待处理数据部分长度，防止处理过程中数据堆积
+        data_add_mutex: 待处理数据互斥锁
+        pos: 当前数据原点偏移位置
+        data_tab: 标记数据段数组
+        data_tab_mutex: 标记数据段互斥锁
+        tab_flag: 标记数据段标志
+        test_flag: 标记数据段测试标志
+    '''
+
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
-        # self.setupUi(self)
-        try:
-            self.ui = uic.loadUi('ui/draw.ui', self)
-        except:
-            self.ui = uic.loadUi('draw.ui', self)
+        self.setupUi(self)
+        # try:
+        #     self.ui = uic.loadUi('ui/draw.ui', self)
+        # except:
+        #     self.ui = uic.loadUi('draw.ui', self)
+        # 变量初始化
+        self.history = np.array([])  # 待处理数据部分的原始数据, 保持长度为当前采样率
+        self.data_add = np.array([])  # 待处理数据部分长度，防止处理过程中数据堆积
+        self.data_add_mutex = QMutex()   # 待处理数据互斥锁
+        self.pos = 0 # 当前数据原点偏移位置
+        self.data_tab = np.array([])  # 标记数据段数组
+        self.data_tab_mutex = QMutex()   # 标记数据段互斥锁
+        self.tab_flag = False    # 标记数据段标志
+        self.test_flag = False    # 标记数据段测试标志
+
         self.initUI()
 
     def initUI(self):
@@ -383,11 +426,11 @@ class drawFrame(QFrame, Ui_Form):
         self.processTimer = QTimer(self)
         self.processTimer.timeout.connect(self.processData) # 定时处理数据
         self.processTimer.start(50) # 50ms处理一次数据
-        ...
+
     def btn_test_clicked(self): # 测试按钮点击事件
         if self.test_flag:  # 如果测试标志为True --> 关闭测试
             self.test_flag = False
-            self.btn_test.setText('测试')
+            self.btn_test.setText('识别')
         else:
             self.test_flag = True
             self.btn_test.setText('停止')
@@ -405,6 +448,8 @@ class drawFrame(QFrame, Ui_Form):
             self.canvas.getPlotItem().getAxis('bottom').showLabel(False)  # 隐藏下方坐标轴
 
     def processData(self):  # 处理数据 --> 定时器50ms调用一次
+        ''' 处理数据 --> 定时器50ms调用一次'''
+
         # 待处理数据获取(互斥锁)
         self.data_add_mutex.lock()
         data = self.data_add
@@ -432,13 +477,11 @@ class drawFrame(QFrame, Ui_Form):
             process = sosfilt(glo.sos_band, process)    # 带通滤波
 
         data = process[-len_data:]  # 待显示数据(长度为len_data)
-
-        # 数据原点移动
-        self.pos += len_data
-        self.canvas.curve.setPos(self.pos - self.canvas.XDIS, 0)
         
-        if max(abs(data)) > 6000 and not self.tab_flag and self.test_flag:  # 数据小窗判断
-            self.tab_flag = True
+        if max(abs(data)) > glo.pointLow and not self.tab_flag and self.test_flag:  # 数据小窗判断
+            self.tab_flag = True    # 修改识别标记
+            self.data_tab = np.append(self.data_tab, self.canvas.ydata[int(-glo.sample_rate / 100 * 2):])  # 添加数据到Tab数据列表
+            self.canvasTab.data_tab_point = np.append(self.canvasTab.data_tab_point, self.pos)  # 添加数据到Tab数据点列表
             ...
         
         if self.tab_flag:   # 数据小窗显示
@@ -455,9 +498,12 @@ class drawFrame(QFrame, Ui_Form):
                         self.canvasTab.toNum += 1
                     else:
                         self.canvasTab.canvasTabDraw(1, self.canvasTab.findNum)
-
-                self.Mo = (self.Mo + 1) % 3
+                self.canvasTab.lb_all.setText('共 '+str(self.canvasTab.findNum)+' 个')    # 更新<总页数>标签
                 self.data_tab = np.array([])    # 清空标记数据段
+
+        # 数据原点移动
+        self.pos += len_data
+        self.canvas.curve.setPos(self.pos - self.canvas.XDIS, 0)
 
         # 更新绘图数据
         self.canvas.ydata[:-len_data] = self.canvas.ydata[len_data:]
@@ -472,16 +518,18 @@ class drawFrame(QFrame, Ui_Form):
         ...
     
     def addData(self, data):    # 向待处理数据中添加测取数据
+        ''' 向待处理数据中添加测取数据'''
         # 待处理数据添加(互斥锁)
         self.data_add_mutex.lock()
         self.data_add = np.append(self.data_add, data)
         self.data_add_mutex.unlock()
 
     def updateYlim(self):   # 更新Y轴范围
-        print("updateYlim")
+        ''' 更新Y轴范围'''
         self.canvas.setRange(yRange=[-glo.YDIS, glo.YDIS])
 
-    def updateXlim(self):  # 更新X轴范围    # TODO
+    def updateXlim(self):  # 更新X轴范围
+        ''' 更新X轴范围'''
         self.canvas.XDIS = glo.XDIS
         self.canvas.curve.setData(
             self.canvas.xdata[-self.canvas.XDIS:], self.canvas.ydata[-self.canvas.XDIS:])

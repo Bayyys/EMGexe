@@ -247,7 +247,7 @@
          <item>
           <widget class="QPushButton" name="btn_test">
            <property name="text">
-            <string>测试</string>
+            <string>识别</string>
            </property>
           </widget>
          </item>

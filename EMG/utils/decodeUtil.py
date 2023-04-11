@@ -13,9 +13,12 @@ def signalDecode(str):
 def bytestoFloat(data):
     '''将字节转换为浮点数
     
-    args: data: 读取到的数据
-    
-    return: data: 转换后的数据'''
+    Attribute:
+        data: 读取到的数据
+
+    Return:
+        data: 转换后的数据
+    '''
     start_index = 0
     try:
         if data[3] > 128:
@@ -33,7 +36,7 @@ def bytestoFloat(data):
         return 0
 
 def LowPassFilter(cutoffFreq, fs, N=8, ripple=1):  # 低通滤波
-    # 低通滤波
+    '''低通滤波'''
     print("LowPassFilter Changed!")
     # return cheby1(N=N, rp=ripple,
     #                 Wn=cutoffFreq,
@@ -42,7 +45,7 @@ def LowPassFilter(cutoffFreq, fs, N=8, ripple=1):  # 低通滤波
     return butter(N=N, Wn=cutoffFreq, btype='lowpass', output='sos', fs=fs)
 
 def HighPassFilter(cutoffFreq, fs, N=8, ripple=1): # 高通滤波
-    # 高通滤波
+    '''高通滤波'''
     print("HighPassFilter Changed!")
     # return cheby1(N=N, rp=ripple,
     #                 Wn=cutoffFreq,
@@ -51,7 +54,7 @@ def HighPassFilter(cutoffFreq, fs, N=8, ripple=1): # 高通滤波
     return butter(N=N, Wn=cutoffFreq, btype='highpass', output='sos', fs=fs)
 
 def NotchFilter(cutoffFreq, filterParam, fs, N=8, ripple=1):    # 陷波滤波
-    # 陷波滤波
+    '''陷波滤波'''
     print("NotchFilter Changed!")
     # return cheby1(N=N, rp=ripple,
     #                 Wn=[cutoffFreq - filterParam, cutoffFreq + filterParam],
@@ -61,7 +64,7 @@ def NotchFilter(cutoffFreq, filterParam, fs, N=8, ripple=1):    # 陷波滤波
                   btype='bandstop', output='sos', fs=fs)
 
 def BandPassFilter(passbandFreq, stopbandFreq, fs, N=8, ripple=1):  # 带通滤波
-    # 带通滤波
+    '''带通滤波'''
     print("BandPassFilter Changed!")
     # return cheby1(N=N, rp=ripple,
     #                 Wn=[passbandFreq, stopbandFreq],

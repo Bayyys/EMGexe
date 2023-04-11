@@ -16,7 +16,12 @@ class getCom(QThread):  # 获取串口号线程
     (检测串口的变化, 发生变化传递更新串口号列表)
     '''
     comUpdate = pyqtSignal(list)
-    port_list_orignal = []
+
+    def __init__(self):
+        super().__init__()
+        
+        self.port_list_orignal = []
+
     def run(self):
         while(True):
             port_list = list(serial.tools.list_ports.comports())
@@ -210,9 +215,13 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)  # TODO: 根据
 def serialOpen(com, bps, timex):    # 打开串口
     """打开串口
 
-    args: com: 串口号; bps: 波特率; timex: 超时时间
+    Attributes:
+        com: 串口号
+        bps: 波特率
+        timex: 超时时间
 
-    return: ser: 串口对象
+    Returns:
+        ser: 串口对象
     """
     try:
         ser = serial.Serial(com, int(bps), timeout=int(timex))
@@ -260,6 +269,7 @@ class updateFig(QThread):   # WAIT
     def run(self):
         while glo.connected:
             self.chartList.canvas.draw()
+
 class processFig(QThread):  # WAIT
     def __init__(self, chart):
         super().__init__()

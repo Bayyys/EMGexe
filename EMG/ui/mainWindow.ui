@@ -727,11 +727,11 @@
                        </sizepolicy>
                       </property>
                       <property name="currentIndex">
-                       <number>2</number>
+                       <number>0</number>
                       </property>
                       <item>
                        <property name="text">
-                        <string>0.5</string>
+                        <string>1</string>
                        </property>
                       </item>
                       <item>

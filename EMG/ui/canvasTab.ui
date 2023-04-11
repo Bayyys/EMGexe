@@ -236,10 +236,10 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="et_page">
+       <widget class="QLabel" name="lb_page">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>1</horstretch>
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>2</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
@@ -249,8 +249,8 @@
           <height>23</height>
          </size>
         </property>
-        <property name="maxLength">
-         <number>6</number>
+        <property name="text">
+         <string>---</string>
         </property>
        </widget>
       </item>
@@ -264,7 +264,7 @@
         </property>
         <property name="maximumSize">
          <size>
-          <width>40</width>
+          <width>60</width>
           <height>23</height>
          </size>
         </property>
