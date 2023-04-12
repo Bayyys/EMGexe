@@ -1,6 +1,6 @@
 import sys
 import os
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QComboBox, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QComboBox, QVBoxLayout, QWidget, QWidgetAction
 from PyQt5.QtCore import Qt, QDateTime, pyqtSignal, QThread, QMutex, QTimer
 from PyQt5 import uic
 # 串口操作
@@ -18,11 +18,27 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
-        # self.ui = uic.loadUi('ui/mainWindow.ui', self)
+        if glo.ui_flag:
+            self.ui = uic.loadUi('ui/mainWindow.ui', self)
+        else:
+            self.setupUi(self)
+        self.initWidgetUI()  # 初始化控件UI
         self.initDATA()  # 初始化数据
         self.initUIFunc()   # 初始化UI界面
-
+        self.tabWidget.setCurrentIndex(0)  # 默认显示第一个tab
+        self.tabWidget.currentChanged.connect(self.updateUIIndex)  # tab切换
+    
+    def initWidgetUI(self):  # 初始化控件UI
+        # 初始化
+        self.filterWidget = QWidget(self)
+        self.filterWidget.ui = uic.loadUi('ui/filter.ui', self.filterWidget)
+        # 控件槽函数连接
+        ...
+        # 添加控件
+        act = QWidgetAction(self)
+        act.setDefaultWidget(self.filterWidget)
+        self.tb_filter.addAction(act)
+        
     def initUIFunc(self):   # 初始化UI界面&槽函数
         self.initMenuUIFunc()   # 菜单栏控件槽函数初始化
         self.initRealUIFunc()   # 实时检测界面控件槽函数初始化
@@ -32,12 +48,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         # 菜单栏部分
         self.action_open.triggered.connect(
             self.action_open_clicked)    # 菜单栏-打开文件
-        # self.action_save.triggered.connect(
-            # self.action_save_clicked)           # 菜单栏-保存文件
-        self.action_exit.triggered.connect(
-            self.action_exit_clicked)    # 菜单栏-退出
         # Tab 部分
-        self.tabWidget.setCurrentIndex(0)   # 默认显示实时检测部分  # WAIT
 
     def initRealUIFunc(self):  # 实时检测界面控件槽函数初始化
         #=========== 实时检测部分 ===========#
@@ -59,22 +70,6 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             self.box_all_DIS_changed)  # Y轴显示范围
         self.box_xdis.currentIndexChanged.connect(
             self.box_all_DIS_changed)  # X轴显示范围
-        self.ck_baseline.clicked.connect(self.ck_all_filter_clicked)    # 基线开关
-        self.ck_low.clicked.connect(self.ck_all_filter_clicked)    # 低通滤波器开关
-        self.ck_high.clicked.connect(self.ck_all_filter_clicked)    # 高通滤波器开关
-        self.ck_notch.clicked.connect(self.ck_all_filter_clicked)   # 陷波滤波器开关
-        self.ck_band.clicked.connect(self.ck_all_filter_clicked)    # 带通滤波器开关
-        self.sb_low.valueChanged.connect(self.sb_low_valueChanged)  # 高通滤波器截止频率
-        self.sb_high.valueChanged.connect(
-            self.sb_high_valueChanged)  # 高通滤波器截止频率
-        self.sb_notch_cutoff.valueChanged.connect(
-            self.sb_notch_valueChanged)   # 陷波滤波器截止频率
-        self.sb_notch_param.valueChanged.connect(
-            self.sb_notch_valueChanged)  # 陷波滤波器参数
-        self.sb_band_pass.valueChanged.connect(
-            self.sb_band_valueChanged)   # 带通滤波器通带频率
-        self.sb_band_stop.valueChanged.connect(
-            self.sb_band_valueChanged)   # 带通滤波器阻带频率
         self.box_sample_rate.currentIndexChanged.connect(
             self.box_sample_rate_changed)  # 采样率
         self.box_channel_num.currentIndexChanged.connect(
@@ -147,18 +142,19 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     def updateGlobalData(self): # 更新全局参数
         glo.channel_num = int(self.box_channel_num.currentText())   # 通道数
         glo.sample_rate = int(self.box_sample_rate.currentText())   # 采样率
-        glo.XDIS = int(self.box_xdis.currentText()) * glo.sample_rate   # X轴显示范围
+        glo.XDIS_INDEX = int(self.box_xdis.currentText())  # X轴显示范围索引
+        glo.XDIS = glo.XDIS_INDEX * glo.sample_rate   # X轴显示范围
         glo.YDIS = int(self.box_ydis.currentText()) # Y轴显示范围
-        glo.isLowPassFilter = self.ck_low.isChecked()   # 高通滤波器开关
-        glo.isHighPassFilter = self.ck_high.isChecked() # 高通滤波器开关
-        glo.isNotchFilter = self.ck_notch.isChecked()   # 陷波滤波器开关
-        glo.isBandPassFilter = self.ck_band.isChecked() # 带通滤波器开关
-        glo.highFilter_high = self.sb_high.value()  # 高通滤波器截止频率
-        glo.lowFilter_low = self.sb_low.value() # 高通滤波器截止频率
-        glo.notchFilter_cutoff = self.sb_notch_cutoff.value()   # 陷波滤波器截止频率
-        glo.notchFilter_param = self.sb_notch_param.value() # 陷波滤波器参数
-        glo.bandFilter_pass = self.sb_band_pass.value()  # 带通滤波器通带频率
-        glo.bandFilter_stop = self.sb_band_stop.value() # 带通滤波器阻带频率
+        glo.isLowPassFilter = self.filterWidget.ck_low.isChecked()   # 高通滤波器开关
+        glo.isHighPassFilter = self.filterWidget.ck_high.isChecked() # 高通滤波器开关
+        glo.isNotchFilter = self.filterWidget.ck_notch.isChecked()   # 陷波滤波器开关
+        glo.isBandPassFilter = self.filterWidget.ck_band.isChecked() # 带通滤波器开关
+        glo.highFilter_high = self.filterWidget.sb_high.value()  # 高通滤波器截止频率
+        glo.lowFilter_low = self.filterWidget.sb_low.value() # 高通滤波器截止频率
+        glo.notchFilter_cutoff = self.filterWidget.sb_notch_cutoff.value()   # 陷波滤波器截止频率
+        glo.notchFilter_param = self.filterWidget.sb_notch_param.value() # 陷波滤波器参数
+        glo.bandFilter_pass = self.filterWidget.sb_band_pass.value()  # 带通滤波器通带频率
+        glo.bandFilter_stop = self.filterWidget.sb_band_stop.value() # 带通滤波器阻带频率
 
     def initChartFrame(self):   # 初始化图表 Frame
         for i in range(glo.channel_num):
@@ -169,43 +165,53 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             self.chartFrameList.append(chartFrameItem)  # 添加到图像显示列表
             self.layoutChart.addWidget(chartFrameItem)
 
-    def initUIIndex(self):   # 初始化控件索引
-        # self.updateGlobalData()   # 更新全局参数
+    def updateUIIndex(self): # 更新控件索引
         #----------------- 实时检测部分 -----------------#
-        self.box_ydis.setCurrentIndex(5)    # Y轴显示范围(1000)： [20, 50, 100, 200, 500, 1000, 2000, 200000]
-        self.box_xdis.setCurrentIndex(2)    # X轴显示范围(2)： [1, 1, 2, 3, 4]
-        self.box_sample_rate.setCurrentIndex(6) # 采样率(8000)： [250, 500, 1000, 2000, 4000, 6000, 8000, 16000]
-        self.box_channel_num.setCurrentIndex(0) # 通道数(2)： [2, 32]
-        self.ck_baseline.setChecked(True)   # 基线检测开关(True)
-        self.ck_low.setChecked(False)   # 低通滤波器开关(False)
-        self.ck_high.setChecked(True)   # 高通滤波器开关(True)
-        self.ck_notch.setChecked(True)  # 陷波滤波器开关(True)
-        self.ck_band.setChecked(True)   # 带通滤波器开关(True)
-        self.sb_low.setValue(50)    # 低通滤波器截止频率(50)
-        self.sb_high.setValue(1)    # 高通滤波器截止频率(1)
-        self.sb_notch_cutoff.setValue(50)   # 陷波滤波器截止频率(50)
-        self.sb_notch_param.setValue(10)    # 陷波滤波器参数(10)
-        self.sb_band_pass.setValue(1)   # 带通滤波器通带频率(1)
-        self.sb_band_stop.setValue(50)  # 带通滤波器阻带频率(50)
+        self.box_ydis.setCurrentIndex(self.box_ydis.findText(str(glo.YDIS)))    # Y轴显示范围(1000)： [20, 50, 100, 200, 500, 1000, 2000, 200000]
+        self.box_xdis.setCurrentIndex(self.box_xdis.findText(str(glo.XDIS_INDEX)))    # X轴显示范围(1)： [1, 2, 3, 4]
+        self.box_sample_rate.setCurrentIndex(self.box_sample_rate.findText(str(glo.sample_rate))) # 采样率(8000)： [250, 500, 1000, 2000, 4000, 6000, 8000, 16000]
+        self.box_channel_num.setCurrentIndex(
+            self.box_channel_num.findText(str(glo.channel_num)))  # 通道数(2)： [2, 32]
+        self.filterWidget.ck_baseline.setChecked(
+            glo.isBaseline)   # 基线检测开关(True)
+        self.filterWidget.ck_low.setChecked(
+            glo.isLowPassFilter)   # 低通滤波器开关(False)
+        self.filterWidget.ck_high.setChecked(
+            glo.isHighPassFilter)   # 高通滤波器开关(True)
+        self.filterWidget.ck_notch.setChecked(
+            glo.isNotchFilter)  # 陷波滤波器开关(True)
+        self.filterWidget.ck_band.setChecked(
+            glo.isBandPassFilter)   # 带通滤波器开关(True)
+        self.filterWidget.sb_low.setValue(glo.lowFilter_low)    # 低通滤波器截止频率(50)
+        self.filterWidget.sb_high.setValue(
+            glo.highFilter_high)    # 高通滤波器截止频率(1)
+        self.filterWidget.sb_notch_cutoff.setValue(
+            glo.notchFilter_cutoff)   # 陷波滤波器截止频率(50)
+        self.filterWidget.sb_notch_param.setValue(
+            glo.notchFilter_param)    # 陷波滤波器参数(10)
+        self.filterWidget.sb_band_pass.setValue(
+            glo.bandFilter_pass)   # 带通滤波器通带频率(1)
+        self.filterWidget.sb_band_stop.setValue(
+            glo.bandFilter_stop)  # 带通滤波器阻带频率(50)
         #----------------- 文件检测部分 -----------------#
-        self.file_box_ydis.setCurrentIndex(5)   # Y轴显示范围(1000)： [20, 50, 100, 200, 500, 1000, 2000, 200000]
-        self.file_box_xdis.setCurrentIndex(2)   # X轴显示范围(2)： [1, 1, 2, 3, 4]
-        self.file_box_sample_rate.setCurrentIndex(6)    # 采样率(8000)： [250, 500, 1000, 2000, 4000, 6000, 8000, 16000]
-        self.file_box_channel_num.setCurrentIndex(0)    # 通道数(2)： [2, 32]
-        self.file_ck_baseline.setChecked(True)  # 基线检测开关(True)
-        self.file_ck_low.setChecked(False)  # 低通滤波器开关(False)
-        self.file_ck_high.setChecked(True)  # 高通滤波器开关(True)
-        self.file_ck_notch.setChecked(True) # 陷波滤波器开关(True)
-        self.file_ck_band.setChecked(True)  # 带通滤波器开关(True)
-        self.file_sb_low.setValue(50)   # 低通滤波器截止频率(50)
-        self.file_sb_high.setValue(1)   # 高通滤波器截止频率(1)
-        self.file_sb_notch_cutoff.setValue(50)  # 陷波滤波器截止频率(50)
-        self.file_sb_notch_param.setValue(10)   # 陷波滤波器参数(10)
-        self.file_sb_band_pass.setValue(1)  # 带通滤波器通带频率(1)
-        self.file_sb_band_stop.setValue(50) # 带通滤波器阻带频率(50)
-        ...
+        self.file_box_ydis.setCurrentIndex(self.file_box_ydis.findText(str(glo.YDIS)))    # Y轴显示范围(1000)： [20, 50, 100, 200, 500, 1000, 2000, 200000]
+        self.file_box_xdis.setCurrentIndex(self.file_box_xdis.findText(str(glo.XDIS_INDEX)))    # X轴显示范围(1)： [1, 2, 3, 4]
+        self.file_box_sample_rate.setCurrentIndex(self.file_box_sample_rate.findText(str(glo.sample_rate))) # 采样率(8000)： [250, 500, 1000, 2000, 4000, 6000, 8000, 16000]
+        self.file_box_channel_num.setCurrentIndex(
+            self.file_box_channel_num.findText(str(glo.channel_num)))  # 通道数(2)： [2, 32]
+        self.file_ck_baseline.setChecked(glo.isBaseline)   # 基线检测开关(True)
+        self.file_ck_low.setChecked(glo.isLowPassFilter)   # 低通滤波器开关(False)
+        self.file_ck_high.setChecked(glo.isHighPassFilter)   # 高通滤波器开关(True)
+        self.file_ck_notch.setChecked(glo.isNotchFilter)  # 陷波滤波器开关(True)
+        self.file_ck_band.setChecked(glo.isBandPassFilter)   # 带通滤波器开关(True)
+        self.file_sb_low.setValue(glo.lowFilter_low)    # 低通滤波器截止频率(50)
+        self.file_sb_high.setValue(glo.highFilter_high)    # 高通滤波器截止频率(1)
+        self.file_sb_notch_cutoff.setValue(glo.notchFilter_cutoff)   # 陷波滤波器截止频率(50)
+        self.file_sb_notch_param.setValue(glo.notchFilter_param)    # 陷波滤波器参数(10)
+        self.file_sb_band_pass.setValue(glo.bandFilter_pass)   # 带通滤波器通带频率(1)
+        self.file_sb_band_stop.setValue(glo.bandFilter_stop)  # 带通滤波器阻带频率(50)
+        # -------------------------------------------------#
 
-    #------------------------------- 控件事件 -------------------------------#
 
     def action_open_clicked(self):  # 打开文件事件
         if glo.scan:    # 如果已经连接设备，提示先断开连接
@@ -216,7 +222,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
                                                     filter='纯文本(*.txt) ;; CSV(*.csv) ;; All Files (*) ', initialFilter='纯文本(*.txt)')
         if glo.load_data(dirpath, type):    # 加载文件
             self.file_btn_draw.setText('绘制')
-            self.initUIIndex()  # 初始化控件索引
+            # self.initUIIndex()  # 初始化控件索引
+            self.updateUIIndex()    # 更新控件索引
             self.tabWidget.setCurrentIndex(1)   # 切换到文件读取界面
             self.file_et_path.setText(dirpath)  # 显示文件路径
             self.group_state_file.setEnabled(True)
@@ -232,25 +239,6 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             self.chartFrameList = []    # 绘图Canvas列表
             self.initChartFrameFile()   # 初始化 fileCanvas
             self.statusBar.showMessage('文件加载成功 (' + dirpath + ')', 5000)
-
-    def action_save_clicked(self):  # 保存文件事件  # WAIT
-        if glo.history.shape[1] < 2:
-            self.statusBar.showMessage("请先测量数据", 3000)
-            return
-        if glo.connected:
-            self.statusBar.showMessage('请先断开连接', 3000)
-            return
-        dirpath, type = QFileDialog.getSaveFileName(self,
-                                                    directory=self.et_filePath.text()+QDateTime.currentDateTime().toString('/yy-MM-dd-hhmm')+'-'+str(glo.sample_rate)+'Hz'+'-'+str(int(glo.history.shape[1] / glo.sample_rate))+'s', caption='保存文件', filter='CSV(*.csv) ;;纯文本(*.txt)', initialFilter='纯文本(*.txt)')
-        glo.save_data(dirpath, type)
-        if dirpath != '':
-            self.statusBar.showMessage('文件保存成功 (' + dirpath + ')', 5000)
-        else:
-            self.statusBar.showMessage('文件保存失败, 请及时存储测量数据!', 3000)
-        self.file_btn_dataload.setVisible(True)  # 保存成功后, 打开数据加载按钮
-
-    def action_exit_clicked(self):  # 退出事件  # WAIT
-        ...
 
     def btn_connect_clicked(self):  # 连接按钮点击事件
         if glo.get_scan():   # 当前已经连接, 避免重复连接
@@ -275,7 +263,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             self.lb_connect.setStyleSheet('color: balck')   # 设置连接状态颜色(黑色)
             self.lb_start.setText('等待测量')   # 设置开始/暂停状态文本
             self.lb_start.setStyleSheet('color: green') # 设置开始/暂停状态颜色(绿色)
-            self.initUIIndex()  # 初始化控件索引
+            # self.initUIIndex()  # 初始化控件索引
+            self.updateUIIndex()    # 更新控件索引
             self.updateGlobalData() # 更新全局变量
             serUtil.serialClose(glo.get_ser)    # 关闭串口
         else:
@@ -405,63 +394,58 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             self.statusBar.showMessage(
                 'Y轴显示范围: ' + self.box_ydis.currentText() + 'μV', 3000)
         elif self.sender().objectName() == 'box_xdis':
-            glo.XDIS = int(self.box_xdis.currentText()) * glo.sample_rate
+            glo.XDIS_INDEX = int(self.box_xdis.currentText())
+            glo.XDIS = glo.XDIS_INDEX * glo.sample_rate
             self.XDIS_SIGNAL.emit()
             self.statusBar.showMessage(
                 'X轴显示范围: ' + str(glo.XDIS) + 'ms', 3000)
 
     def ck_all_filter_clicked(self):  # 滤波器选择事件
         if self.sender().objectName() == 'ck_baseline':
-            glo.isBaseline = self.ck_baseline.isChecked()
-            if glo.connected:
-                self.statusBar.showMessage(
+            glo.isBaseline = self.sender().isChecked()
+            self.statusBar.showMessage(
                     '基线移除: ' + ('开启' if glo.isBaseline else '关闭'), 3000)
         elif self.sender().objectName() == 'ck_low':
-            glo.isLowPassFilter = self.ck_low.isChecked()
-            if glo.connected:
-                self.statusBar.showMessage(
+            glo.isLowPassFilter = self.sender().isChecked()
+            self.statusBar.showMessage(
                     '低通滤波器: ' + ('开启' if glo.isLowPassFilter else '关闭'), 3000)
         elif self.sender().objectName() == 'ck_high':
-            glo.isHighPassFilter = self.ck_high.isChecked()
-            if glo.connected:
-                self.statusBar.showMessage(
+            glo.isHighPassFilter = self.sender().isChecked()
+            self.statusBar.showMessage(
                     '高通滤波器: ' + ('开启' if glo.isHighPassFilter else '关闭'), 3000)
         elif self.sender().objectName() == 'ck_notch':
-            glo.isNotchFilter = self.ck_notch.isChecked()
-            if glo.connected:
-                self.statusBar.showMessage(
+            glo.isNotchFilter = self.sender().isChecked()
+            self.statusBar.showMessage(
                     '陷波滤波器: ' + ('开启' if glo.isNotchFilter else '关闭'), 3000)
         elif self.sender().objectName() == 'ck_band':
-            glo.isBandPassFilter = self.ck_band.isChecked()
-            if glo.connected:
-                self.statusBar.showMessage(
+            glo.isBandPassFilter = self.sender().isChecked()
+            self.statusBar.showMessage(
                     '带通滤波器: ' + ('开启' if glo.isBandPassFilter else '关闭'), 3000)
 
     def sb_low_valueChanged(self):     # 低通滤波器截止频率改变事件
-        glo.lowFilter_low = self.sb_low.value()
+        glo.lowFilter_low = self.filterWidget.sb_low.value()
         glo.lowFilterUpdate()
 
     def sb_high_valueChanged(self):     # 高通滤波器截止频率改变事件
-        glo.highFilter_high = self.sb_high.value()
+        glo.highFilter_high = self.filterWidget.sb_high.value()
         glo.highFilterUpdate()
 
     def sb_notch_valueChanged(self):    # 陷波滤波器截止频率和参数改变事件
-        glo.notchFilter_cutoff = self.sb_notch_cutoff.value()
-        glo.notchFilter_param = self.sb_notch_param.value()
+        glo.notchFilter_cutoff = self.filterWidget.sb_notch_cutoff.value()
+        glo.notchFilter_param = self.filterWidget.sb_notch_param.value()
         glo.notchFilterUpdate()
 
     def sb_band_valueChanged(self):    # 带通滤波器通带频率和阻带频率改变事件
-        glo.bandFilter_pass = self.sb_band_pass.value()
-        glo.bandFilter_stop = self.sb_band_stop.value()
+        glo.bandFilter_pass = self.filterWidget.sb_band_pass.value()
+        glo.bandFilter_stop = self.filterWidget.sb_band_stop.value()
         if glo.bandFilter_stop < glo.bandFilter_pass:
             glo.bandFilter_stop += glo.bandFilter_pass
         glo.bandFilterUpdate()
 
     def box_sample_rate_changed(self):  # 采样率改变事件
-        glo.sample_rate = int(self.box_sample_rate.currentText())
+        glo.sample_rate = int(self.filterWidget.box_sample_rate.currentText())
         self.statusBar.showMessage(
             '采样率: ' + str(glo.sample_rate) + 'Hz', 3000)
-        self.box_xdis.setCurrentIndex(2)
 
     def box_channel_num_changed(self):  # 通道数改变事件
         self.statusBar.showMessage(
@@ -501,9 +485,6 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.btn_stop.setEnabled(True)  # 开启停止按钮
         self.lb_start.setText('正在测量')
         self.lb_start.setStyleSheet('color: green')
-
-    def initConnectParams(self):  # 初始化连接参数  --> 连接按钮点击事件：连接成功时触发    # WAIT
-        ...
 
     def connSeialThread(self):  # 连接串口读取线程  --> 连接按钮点击事件：连接成功时触发
         if glo.channel_num == 2:
@@ -545,7 +526,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
     def file_btn_dataload_clicked(self):  # 历史数据界面：数据加载按钮点击事件
         self.file_btn_draw.setText('绘制')
-        self.initUIIndex()
+        # self.initUIIndex()
+        self.updateUIIndex()    # 更新控件索引
         self.file_btn_dataload.setVisible(False)
         self.file_et_path.setText("实时检测数据")
         self.group_state_file.setEnabled(True)
@@ -554,8 +536,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.group_params_file.setEnabled(False)
         glo.initFilterParams()
         self.initDATAFile()
-        # for i in range(2):    # WAIT
-        #     self.chartFrameList[i].close()
+        for i in range(2):
+            self.chartFrameList[i].close()
         self.chartFrameList.clear()
         # 清空垂直布局内的表格
         self.chartFrameList = []
@@ -565,7 +547,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     def initDATAFile(self):  # 历史数据界面初始化数据
         # 信号处理部分
         glo.YDIS = int(self.file_box_ydis.currentText())
-        glo.XDIS = int(self.file_box_xdis.currentText()) * glo.sample_rate
+        glo.XDIS_INDEX = int(self.file_box_xdis.currentText())
+        glo.XDIS = glo.XDIS_INDEX * glo.sample_rate
         glo.isHighPassFilter = self.file_ck_high.isChecked()
         glo.isNotchFilter = self.file_ck_notch.isChecked()
         glo.isBandPassFilter = self.file_ck_band.isChecked()
@@ -634,7 +617,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             self.YDIS_SIGNAL.emit()
             self.statusBar.showMessage("Y轴显示范围设置为: " + str(glo.YDIS), 3000)
         elif self.sender().objectName() == 'file_box_xdis':
-            glo.XDIS = int(self.file_box_xdis.currentText()) * glo.sample_rate
+            glo.XDIS_INDEX = int(self.file_box_xdis.currentText())
+            glo.XDIS = glo.XDIS_INDEX * glo.sample_rate
             # self.XDIS_SIGNAL.emit()
             self.statusBar.showMessage(
                 "X轴显示范围设置为: " + str(glo.XDIS) + '. 点击<重新绘制>按钮进行图像更新！', 3000)

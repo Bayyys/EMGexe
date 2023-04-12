@@ -260,28 +260,6 @@ def serialClose(ser):   # 关闭串口
         print("serialClose: 串口不存在")
         return
 
-class updateFig(QThread):   # WAIT
-    def __init__(self, chartList):
-        super().__init__()
-        self.chartList = chartList
-        # print(self.parent)
-
-    def run(self):
-        while glo.connected:
-            self.chartList.canvas.draw()
-
-class processFig(QThread):  # WAIT
-    def __init__(self, chart):
-        super().__init__()
-        self.chart = chart
-        # print(self.parent)
-    
-    def run(self):
-        while glo.connected:
-            self.chart.processData()
-            ...
-            
-
 if __name__ == '__main__':
     port_list = list(serial.tools.list_ports.comports())
     print(type(port_list))

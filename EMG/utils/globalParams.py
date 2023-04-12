@@ -8,7 +8,7 @@ from PyQt5.QtCore import QMutex
 import queue
 
 def __init__():
-    global scan, connected, ser, history, data, mutex_history, time, com, isBaseline, isLowPassFilter, isHighPassFilter, isNotchFilter, isBandPassFilter, XDIS, YDIS, sample_rate, channel_num, sos_low, sos_high, sos_notch, sos_band, lowFilter_low, highFilter_low, highFilter_high, notchFilter_cutoff, notchFilter_param, bandFilter_pass, bandFilter_stop, message, pointLow, pointHigh
+    global scan, connected, ser, history, data, mutex_history, time, com, isBaseline, isLowPassFilter, isHighPassFilter, isNotchFilter, isBandPassFilter, XDIS, YDIS, XDIS_INDEX, sample_rate, channel_num, sos_low, sos_high, sos_notch, sos_band, lowFilter_low, highFilter_low, highFilter_high, notchFilter_cutoff, notchFilter_param, bandFilter_pass, bandFilter_stop, message, pointLow, pointHigh, ui_flag
     # 状态
     scan = False    # 扫描状态
     connected = False   # 连接状态
@@ -21,6 +21,7 @@ def __init__():
     channel_num = 2    # 通道数
     sample_rate = 1000  # 采样率
     XDIS = 8000 # 采样点数
+    XDIS_INDEX = 1  # 采样点数索引
     YDIS = 200000   # 采样点数
     isBaseline = True   # 基线校准开关
     isLowPassFilter = False # 低通滤波开关
@@ -48,6 +49,8 @@ def __init__():
     # 标记数据段参数
     pointLow = 6000 # 标记数据段触发点
     pointHigh = 20000   # 标记数据段峰值
+    # UI界面选择参数(.ui/.py)
+    ui_flag = True # True: .ui, False: .py
 
 def sendMessage(state, connect='usb', sample_rate=1000, channel=32):
     '''发送命令
@@ -122,12 +125,6 @@ def set_ser(value):
     global ser
     ser = value
 
-def init_history(): # 初始化 # WAIT
-    global history
-    mutex_history.lock()
-    history = np.array([[], []])
-    mutex_history.unlock()
-
 def add_history(value):
     '''添加数据
     
@@ -139,10 +136,6 @@ def add_history(value):
     history = np.concatenate((history, value), axis=1)
     history.put(value)
     mutex_history.unlock()
-
-def len_history():  # 获取数据长度 # WAIT
-    global history
-    return history.shape[1]
 
 def get_com():
     return com

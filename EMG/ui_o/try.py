@@ -1,30 +1,37 @@
-import queue
-import numpy as np
+import sys
+from PyQt5.Qt import *
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import *
+app = QApplication(sys.argv)
+window = QWidget()
+window.resize(800,600)
 
-# array1 = np.arange(0, 10, 1)
-# array2 = np.arange(10, 20, 1)
+btn = QToolButton(window)
+btn.setText('menu')
 
-# array = np.array([array1, array2])
+# btn.clicked.connect(lambda :print('按钮被按下'))
+menu = QMenu()
 
-# myQueue = queue.Queue()
+action_1 = QAction(menu)
+action_1.setText('action1')
 
-# myQueue.put(array)
+action_2 = QAction(menu)
+action_2.setText('action2')
+action_1.setData('action1 is called')   #action_1绑定数据
+action_2.setData('action2 is called')   #action_2绑定数据
 
-# array1 = np.arange(0, 100, 1)
-# array2 = np.arange(100, 200, 1)
+menu.addAction(action_1)
 
-# array = np.array([array1, array2])
+menu.addAction(action_2)
+btn.setMenu(menu)
 
-# myQueue.put(array)
+def btn_call(action):
+    print(action.data())  #获取action里的数据
 
-# # ----------------------------
-# with open('test.txt', 'ab') as f:
-#     while not myQueue.empty():
-#         data = myQueue.get()
-#         print(data)
-#         np.savetxt(f, np.transpose(data), fmt='%d', delimiter=' ')
-try:
-    with open('./test/test.txt', 'w') as f:
-        ...
-except:
-    print('无法创建文件')
+btn.triggered.connect(btn_call)
+btn.setPopupMode(QToolButton.MenuButtonPopup)
+# btn.setFocusPolicy(Qt.FocusPolicy.)
+window.show()
+sys.exit(app.exec_())
+
+trigged信号用法

@@ -37,7 +37,6 @@ def bytestoFloat(data):
 
 def LowPassFilter(cutoffFreq, fs, N=8, ripple=1):  # 低通滤波
     '''低通滤波'''
-    print("LowPassFilter Changed!")
     # return cheby1(N=N, rp=ripple,
     #                 Wn=cutoffFreq,
     #                 btype='lowpass', fs=fs,
@@ -46,7 +45,6 @@ def LowPassFilter(cutoffFreq, fs, N=8, ripple=1):  # 低通滤波
 
 def HighPassFilter(cutoffFreq, fs, N=8, ripple=1): # 高通滤波
     '''高通滤波'''
-    print("HighPassFilter Changed!")
     # return cheby1(N=N, rp=ripple,
     #                 Wn=cutoffFreq,
     #                 btype='highpass', fs=fs,
@@ -55,7 +53,6 @@ def HighPassFilter(cutoffFreq, fs, N=8, ripple=1): # 高通滤波
 
 def NotchFilter(cutoffFreq, filterParam, fs, N=8, ripple=1):    # 陷波滤波
     '''陷波滤波'''
-    print("NotchFilter Changed!")
     # return cheby1(N=N, rp=ripple,
     #                 Wn=[cutoffFreq - filterParam, cutoffFreq + filterParam],
     #                 btype='bandstop', fs=fs,
@@ -65,7 +62,6 @@ def NotchFilter(cutoffFreq, filterParam, fs, N=8, ripple=1):    # 陷波滤波
 
 def BandPassFilter(passbandFreq, stopbandFreq, fs, N=8, ripple=1):  # 带通滤波
     '''带通滤波'''
-    print("BandPassFilter Changed!")
     # return cheby1(N=N, rp=ripple,
     #                 Wn=[passbandFreq, stopbandFreq],
     #                 btype='bandpass', fs=fs,

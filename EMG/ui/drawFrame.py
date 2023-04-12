@@ -140,11 +140,13 @@ class drawTabFrame(QFrame, Ui_canvasTab):
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
-        self.setupUi(self)
-        # try:
-        #     self.ui = uic.loadUi('ui/canvasTab.ui', self)
-        # except:
-        #     self.ui = uic.loadUi('canvasTab.ui', self)
+        if glo.ui_flag:
+            try:
+                self.ui = uic.loadUi('ui/canvasTab.ui', self)
+            except:
+                self.ui = uic.loadUi('canvasTab.ui', self)
+        else:
+            self.setupUi(self)
         self.tabCanvasList = [] # 用于存储tabCanvas的列表(三维)
         self.findNum = 0    # 记录标记数据段的个数
         self.fromNum = 1    # 记录标记数据段的绘图起始位置
@@ -156,7 +158,6 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         self.initUI()
 
     def initUI(self):
-        self.buttonFrame.setVisible(False)  # 隐藏buttonFrame # WAIT
         pg.setConfigOption('foreground', 'k')   # 设置前景色(绘图折线笔刷颜色) - 黑色
 
         # 设置tabCanvas(三维)
@@ -166,8 +167,6 @@ class drawTabFrame(QFrame, Ui_canvasTab):
             self.plotLayout2.addWidget(tabCanvas)
             self.tabCanvasList.append(tabCanvas)
 
-        self.btn_1.clicked.connect(self.btn_1_clicked)  # WAIT
-        self.btn_2.clicked.connect(self.btn_2_clicked)  # WAIT
         self.btn_head.clicked.connect(self.btn_head_clicked)    # 头部节点
         self.btn_tail.clicked.connect(self.btn_tail_clicked)    # 尾部节点
         self.btn_pre.clicked.connect(self.btn_pre_clicked)  # 上一页
@@ -175,12 +174,6 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         # self.et_page.returnPressed.connect(self.et_page_returnPressed)  # 跳转到指定页_键入
         self.btn_to.clicked.connect(self.btn_to_clicked)    # 跳转到指定页_点击
         self.sb_page.editingFinished.connect(self.sb_page_editingFinished)  # 显示当前页码范围 
-
-    def initTimer(self): # WAIT
-        self.count = 0
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.updateCanvas)
-        self.timer.start(100)
 
     def canvasTabDraw(self, fromNum, toNum):    # 画布Tab绘图
         '''画布Tab绘图
@@ -194,18 +187,6 @@ class drawTabFrame(QFrame, Ui_canvasTab):
             self.tabCanvasList[i].addItem(pg.PlotCurveItem(np.arange(self.data_tab_point[fromNum+i-1], self.data_tab_point[fromNum+i-1] + glo.sample_rate, 1), self.tabDataList[(fromNum+i-1)%20], pen=pg.mkPen('k', width=1.5)))  # 添加画布Tab数据
         
         self.lb_page.setText(str(fromNum) + '-' + str(toNum))
-
-    def updateCanvas(self): # WAIT
-        self.count += 1
-        print("test:" + str(self.count))
-
-    def btn_1_clicked(self):    # WAIT
-        print('btn_1_clicked')
-        ...
-
-    def btn_2_clicked(self):    # WAIT
-        print('btn_2_clicked')
-        ...
 
     def btn_head_clicked(self): # 跳转到头部节点
         self.fresh_state = False
@@ -251,18 +232,6 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         self.canvasTabDraw(self.fromNum, self.toNum)
         ...
 
-    def et_page_returnPressed(self):    # WAIT
-        # self.fresh_state = False
-        # self.fromNum = int(self.sb_page.text()) - 1
-        # self.toNum = self.fromNum + 2
-        # if self.fromNum < 1:
-        #     self.fromNum = 1
-        #     self.toNum = 3
-        # if self.toNum > self.findNum:
-        #     self.toNum = self.findNum
-        # self.canvasTabDraw(self.fromNum, self.toNum)
-        ...
-
     def sb_page_editingFinished(self):  # 跳转页码_键入
         self.fresh_state = False
         self.fromNum = int(self.sb_page.text()) - 1
@@ -276,15 +245,6 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         ...
 
     def btn_to_clicked(self):   # 跳转页码_点击 # WAIT
-        self.fresh_state = False
-        self.fromNum = int(self.sb_page.text()) - 1
-        self.toNum = self.fromNum + 2
-        if self.fromNum < 1:
-            self.fromNum = 1
-            self.toNum = 3
-        if self.toNum > self.findNum:
-            self.toNum = self.findNum
-        self.canvasTabDraw(self.fromNum, self.toNum)
         ...
 
 class drawFrameFile(QFrame, Ui_Form):    #, Ui_Form):
@@ -297,11 +257,13 @@ class drawFrameFile(QFrame, Ui_Form):    #, Ui_Form):
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
-        self.setupUi(self)
-        # try:
-        #     self.ui = uic.loadUi('ui/draw.ui', self)
-        # except:
-        #     self.ui = uic.loadUi('draw.ui', self)
+        if glo.ui_flag:
+            try:
+                self.ui = uic.loadUi('ui/draw.ui', self)
+            except:
+                self.ui = uic.loadUi('draw.ui', self)
+        else:
+            self.setupUi(self)
         self.history = np.array([]) # 历史数据
         self.initUI()
 
@@ -389,11 +351,13 @@ class drawFrame(QFrame, Ui_Form):
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
-        self.setupUi(self)
-        # try:
-        #     self.ui = uic.loadUi('ui/draw.ui', self)
-        # except:
-        #     self.ui = uic.loadUi('draw.ui', self)
+        if glo.ui_flag:
+            try:
+                self.ui = uic.loadUi('ui/draw.ui', self)
+            except:
+                self.ui = uic.loadUi('draw.ui', self)
+        else:
+            self.setupUi(self)
         # 变量初始化
         self.history = np.array([])  # 待处理数据部分的原始数据, 保持长度为当前采样率
         self.data_add = np.array([])  # 待处理数据部分长度，防止处理过程中数据堆积
