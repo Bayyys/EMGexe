@@ -8,6 +8,8 @@ import utils.serialUtil as serUtil
 import utils.globalParams as glo
 from ui.drawFrame import drawFrame, drawFrameFile, FFTCanvas, FFTThread
 from ui.mainWindow import Ui_MainWindow
+from ui.serFrame import serDialog
+from ui.filterFrame import filterWidget
 import numpy as np
 
 
@@ -30,15 +32,56 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     
     def initWidgetUI(self):  # 初始化控件UI
         # 初始化
-        self.filterWidget = QWidget(self)
-        self.filterWidget.ui = uic.loadUi('ui/filter.ui', self.filterWidget)
+        self.filterWidget = filterWidget()
+        # self.filterWidget.ui = uic.loadUi('ui/filter.ui', self.filterWidget)
         # 控件槽函数连接
-        ...
+        self.filterWidget.ck_baseline.clicked.connect(
+            self.ck_all_filter_clicked)    # 基线开关
+        self.filterWidget.ck_low.clicked.connect(
+            self.ck_all_filter_clicked)    # 高通滤波器开关
+        self.filterWidget.ck_high.clicked.connect(
+            self.ck_all_filter_clicked)    # 高通滤波器开关
+        self.filterWidget.ck_notch.clicked.connect(
+            self.ck_all_filter_clicked)   # 陷波滤波器开关
+        self.filterWidget.ck_band.clicked.connect(
+            self.ck_all_filter_clicked)    # 带通滤波器开关
+        self.filterWidget.sb_low.valueChanged.connect(
+            self.sb_low_valueChanged)  # 高通滤波器截止频率
+        self.filterWidget.sb_high.valueChanged.connect(
+            self.sb_high_valueChanged)  # 高通滤波器截止频率
+        self.filterWidget.sb_notch_cutoff.valueChanged.connect(
+            self.sb_notch_valueChanged)   # 陷波滤波器截止频率
+        self.filterWidget.sb_notch_param.valueChanged.connect(
+            self.sb_notch_valueChanged)  # 陷波滤波器参数
+        self.file_sb_band_pass.valueChanged.connect(
+            self.sb_band_valueChanged)   # 带通滤波器通带频率
+        self.filterWidget.sb_band_stop.valueChanged.connect(
+            self.sb_band_valueChanged)   # 带通滤波器阻带频率
         # 添加控件
         act = QWidgetAction(self)
         act.setDefaultWidget(self.filterWidget)
         self.tb_filter.addAction(act)
-        
+        # tb_filter 点击状态改变
+        self.tb_filter.clicked.connect(self.tb_filter_clicked)
+    
+    def tb_filter_clicked(self):    # WAIT
+        if self.tb_filter.text() == '滤波器-OFF':
+            self.tb_filter.setText('滤波器-ON')
+            glo.isFilter = True
+            self.statusBar.showMessage('滤波功能启用', 3000)
+        else:
+            self.tb_filter.setText('滤波器-OFF')
+            self.statusBar.showMessage('滤波功能禁用', 3000)
+            glo.isFilter = False
+
+    def action_ser_set_clicked(self):
+        self.serDialog = serDialog()
+        self.serDialog.show()
+        result = self.serDialog.exec_()
+        if result == 1:
+            glo.port, glo.baudrate, glo.bytesize, glo.parity, glo.stopbits, glo.timeout, glo.control, glo.write_timeout, glo.inter_byte_timeout, glo.exclusive = port, baudrate, bytesize, parity, stopbits, timeout, control, write_timeout, inter_byte_timeout, exclusive = self.serDialog.getSerParams() 
+            self.btn_connect.click()
+
     def initUIFunc(self):   # 初始化UI界面&槽函数
         self.initMenuUIFunc()   # 菜单栏控件槽函数初始化
         self.initRealUIFunc()   # 实时检测界面控件槽函数初始化
@@ -46,8 +89,12 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
     def initMenuUIFunc(self):  # 菜单栏控件槽函数初始化
         # 菜单栏部分
-        self.action_open.triggered.connect(
+        # 文件
+        self.file_open_menu.triggered.connect(
             self.action_open_clicked)    # 菜单栏-打开文件
+        self.file_save_menu.triggered.connect(lambda: ...)  # 菜单栏-文件-保存文件   # WAIT
+        # 连接
+        self.connect_ser_menu.triggered.connect(self.action_ser_set_clicked)  # 菜单栏-串口-配置
         # Tab 部分
 
     def initRealUIFunc(self):  # 实时检测界面控件槽函数初始化
@@ -56,8 +103,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.btn_connect.clicked.connect(self.btn_connect_clicked)   # 连接按钮
         self.btn_disconnect.clicked.connect(
             self.btn_disconnect_clicked)    # 断开连接按钮
-        self.box_com.currentIndexChanged.connect(
-            self.box_com_changed)  # Com 端口选择
+        # self.serDialog.box_port.currentIndexChanged.connect(
+            # self.box_port_changed)  # Com 端口选择    # WAIT
         # 按钮部分
         self.btn_start.clicked.connect(self.btn_start_clicked)  # 开始按钮
         self.btn_stop.clicked.connect(self.btn_stop_clicked)    # 停止按钮
@@ -66,6 +113,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             self.btn_filePath_clicked)    # 文件路径按钮
         self.btn_reset.clicked.connect(self.btn_reset_clicked)  # 重置按钮
         # 信号处理部分
+        self.sb_pointLow.editingFinished.connect(self.sb_pointLow_editingFinished)  # 低点阈值
         self.box_ydis.currentIndexChanged.connect(
             self.box_all_DIS_changed)  # Y轴显示范围
         self.box_xdis.currentIndexChanged.connect(
@@ -212,7 +260,6 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.file_sb_band_stop.setValue(glo.bandFilter_stop)  # 带通滤波器阻带频率(50)
         # -------------------------------------------------#
 
-
     def action_open_clicked(self):  # 打开文件事件
         if glo.scan:    # 如果已经连接设备，提示先断开连接
             self.statusBar.showMessage('请先断开连接', 3000)
@@ -244,19 +291,23 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         if glo.get_scan():   # 当前已经连接, 避免重复连接
             self.statusBar.showMessage("已连接, 无需重复连接", 3000)
             return
+        if glo.port is None:    # 未选择串口
+            self.action_ser_set_clicked()  # 展开串口选择框
+            return
         # 连接串口
         glo.set_ser(serUtil.serialOpen(
-            self.box_com.currentText().split(' ')[0],    # 串口号
-            self.box_bps.currentText(),  # 波特率
-            self.box_timex.currentText()))  # 超时时间
+            glo.port.split(' ')[0],    # 串口号
+            glo.baudrate,  # 波特率
+            glo.timeout))  # 超时时间
         if not self.savePathDirCreate():  # 创建文件夹
             return  # 创建失败, 退出
         if serUtil.serialIsOpen(glo.get_ser()):    # 连接成功
+            glo.init_history()  # 初始化历史数据
             self.statusBar.showMessage("串口连接成功, 点击<开始>按钮进行测量", 5000)
             self.group_state_file.setEnabled(False)
             self.group_params_file.setEnabled(False)
             glo.set_scan(True)  # 设置连接状态 True
-            glo.set_com(self.box_com.currentText().split(' ')[0])   # 设置连接的串口号
+            glo.set_com(glo.port.split(' ')[0])   # 设置连接的串口号
             self.btn_start.setEnabled(True) # 启用开始按钮
             self.btn_disconnect.setEnabled(True)    # 启用断开连接按钮
             self.lb_connect.setText(glo.get_com())  # 显示连接的串口号
@@ -269,6 +320,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             serUtil.serialClose(glo.get_ser)    # 关闭串口
         else:
             # 连接失败
+            glo.port = None
             self.lb_connect.setText('无法连接') # 设置连接状态文本
             self.lb_connect.setStyleSheet('color: red') # 设置连接状态颜色(红色)
             self.statusBar.showMessage("连接失败", 3000)
@@ -291,6 +343,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             self.btn_start.setEnabled(False)    # 禁用开始按钮
             self.btn_stop.setEnabled(False) # 禁用停止按钮
             self.box_sample_rate.setEnabled(True)   # 启用采样率下拉框
+            self.box_channel_num.setEnabled(True)   # 启用通道数下拉框
             glo.set_scan(False)
             self.renameDataFile()
         else:
@@ -303,9 +356,9 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             self.statusBar.showMessage("已连接, 无需重复连接", 3000)
             return
         # 连接串口
-        glo.set_ser(serUtil.serialOpen(self.box_com.currentText().split(' ')[0],    # 串口号
-                                       self.box_bps.currentText(),  # 波特率
-                                       self.box_timex.currentText()))   # 超时时间
+        glo.set_ser(serUtil.serialOpen(glo.port.split(' ')[0],    # 串口号
+                                       glo.baudrate,  # 波特率
+                                       glo.timeout))  # 超时时间
         if serUtil.serialIsOpen(glo.get_ser()):    # 连接成功
             glo.sendMessage(state='start', connect='usb',
                             sample_rate=glo.sample_rate, channel=glo.channel_num)   # 发送开始测量命令
@@ -319,6 +372,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             self.saveTimer.timeout.connect(self.saveHistoryQueue)
             self.saveTimer.start(50)    # 50ms保存一次数据
             self.box_sample_rate.setEnabled(False)  # 禁用采样率下拉框
+            self.box_channel_num.setEnabled(False)  # 禁用通道数下拉框
             self.statusBar.showMessage("开始测量", 5000)
         else:
             # 连接失败
@@ -335,7 +389,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.lb_start.setText('已暂停')  # 设置开始/暂停状态文本
         self.lb_start.setStyleSheet('color: red')   # 设置开始/暂停状态颜色(红色)
 
-    def box_com_changed(self):  # 串口号改变事件, 且当前串口断开
+    def box_port_changed(self):  # 串口号改变事件, 且当前串口断开
         if glo.get_scan():  # 当前已连接，需要断开连接
             self.btn_disconnect_clicked()
             self.btn_connect_clicked()
@@ -386,6 +440,9 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             chartFrame.canvas.zoomReset()
             chartFrame.setVisible(True)
             # chartFrame.chart.zoomReset()
+
+    def sb_pointLow_editingFinished(self):  # 识别点下限滑动条编辑完成事件
+        glo.pointLow = self.sb_pointLow.value()
 
     def box_all_DIS_changed(self):  # 坐标轴轴显示范围改变事件
         if self.sender().objectName() == 'box_ydis':
@@ -443,7 +500,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         glo.bandFilterUpdate()
 
     def box_sample_rate_changed(self):  # 采样率改变事件
-        glo.sample_rate = int(self.filterWidget.box_sample_rate.currentText())
+        glo.sample_rate = int(self.box_sample_rate.currentText())
         self.statusBar.showMessage(
             '采样率: ' + str(glo.sample_rate) + 'Hz', 3000)
 
@@ -466,19 +523,18 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             port_list: 串口列表
         '''
 
-        self.box_com.clear()
-        if len(port_list) == 0:
-            return
-        self.box_com.addItems([port_list[i][0] + ' ' + port_list[i][1]
-                              for i in range(len(port_list))])
+        # self.serDialog.box_port.clear()
+        # if len(port_list) == 0:
+        #     return
+        # self.serDialog.box_port.addItems([port_list[i][0] + ' ' + port_list[i][1]
+        #                       for i in range(len(port_list))])
         if glo.get_scan():  # 当前已经连接, 避免重复连接
-            if glo.get_com() in [port_list[i][0] for i in range(len(port_list))]:
-                self.box_com.setCurrentText(glo.get_com(
-                ) + ' ' + port_list[[port_list[i][0] for i in range(len(port_list))].index(glo.get_com())][1])
+            if glo.get_com() not in [port_list[i][0] for i in range(len(port_list))]:
                 return
             else:
                 self.btn_disconnect_clicked()
-        self.box_com.setCurrentIndex(0)
+        # self.serDialog.box_port.setCurrentIndex(0)
+        ...
 
     def connSuccess(self):  # 连接成功  --> 连接按钮点击事件：连接成功时触发
         glo.set_connected(True)  # 设置连接状态

@@ -8,16 +8,28 @@ from PyQt5.QtCore import QMutex
 import queue
 
 def __init__():
-    global scan, connected, ser, history, data, mutex_history, time, com, isBaseline, isLowPassFilter, isHighPassFilter, isNotchFilter, isBandPassFilter, XDIS, YDIS, XDIS_INDEX, sample_rate, channel_num, sos_low, sos_high, sos_notch, sos_band, lowFilter_low, highFilter_low, highFilter_high, notchFilter_cutoff, notchFilter_param, bandFilter_pass, bandFilter_stop, message, pointLow, pointHigh, ui_flag
+    global scan, connected, ser, history, data, mutex_history, time, com, port, baudrate, bytesize, parity, stopbits, timeout, control, write_timeout, inter_byte_timeout, exclusive, isBaseline, isLowPassFilter, isHighPassFilter, isNotchFilter, isBandPassFilter, XDIS, YDIS, XDIS_INDEX, sample_rate, isFilter, channel_num, sos_low, sos_high, sos_notch, sos_band, lowFilter_low, highFilter_low, highFilter_high, notchFilter_cutoff, notchFilter_param, bandFilter_pass, bandFilter_stop, message, pointLow, pointHigh, ui_flag
     # 状态
     scan = False    # 扫描状态
     connected = False   # 连接状态
-    # 串口和数据
+    # 串口
     ser = None  # 串口
     com = ""    # 串口号
+    port = None
+    baudrate = 4608000
+    bytesize = 8
+    parity = 'N'
+    stopbits = 1
+    timeout = None
+    control = False
+    write_timeout = None
+    inter_byte_timeout = None
+    exclusive = None
+    # 数据
     history = queue.Queue()
     mutex_history = QMutex()
     # 采样参数、滤波器设置参数 4+4+6=14
+    isFilter = True
     channel_num = 2    # 通道数
     sample_rate = 1000  # 采样率
     XDIS = 8000 # 采样点数
@@ -50,7 +62,7 @@ def __init__():
     pointLow = 6000 # 标记数据段触发点
     pointHigh = 20000   # 标记数据段峰值
     # UI界面选择参数(.ui/.py)
-    ui_flag = True # True: .ui, False: .py
+    ui_flag = False # True: .ui, False: .py
 
 def sendMessage(state, connect='usb', sample_rate=1000, channel=32):
     '''发送命令
@@ -124,6 +136,11 @@ def get_ser():
 def set_ser(value):
     global ser
     ser = value
+
+def init_history():
+    '''初始化数据'''
+    global history
+    history = queue.Queue()
 
 def add_history(value):
     '''添加数据

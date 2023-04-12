@@ -27,67 +27,6 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QFrame" name="buttonFrame">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_4">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <layout class="QHBoxLayout" name="buttonLayout">
-        <item>
-         <spacer name="buttonLayoutSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btn_1">
-          <property name="text">
-           <string>button1</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btn_2">
-          <property name="text">
-           <string>button2</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
     <widget class="QFrame" name="plotFrame2">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -125,7 +64,7 @@
         <x>0</x>
         <y>0</y>
         <width>679</width>
-        <height>232</height>
+        <height>259</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
@@ -327,6 +266,9 @@
           <width>40</width>
           <height>23</height>
          </size>
+        </property>
+        <property name="toolTip">
+         <string>当前最多存储20个标记点，跳转时请注意！</string>
         </property>
         <property name="text">
          <string>跳转</string>

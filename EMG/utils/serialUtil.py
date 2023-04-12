@@ -220,7 +220,7 @@ def serialOpen(com, bps, timex):    # 打开串口
         bps: 波特率
         timex: 超时时间
 
-    Returns:
+    Returns
         ser: 串口对象
     """
     try:

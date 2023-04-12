@@ -431,14 +431,15 @@ class drawFrame(QFrame, Ui_Form):
         else:
             data_filter = self.history.copy()
         process = data_filter
-        if glo.isLowPassFilter:
-            process = sosfilt(glo.sos_low, process)     # 低通滤波
-        if glo.isHighPassFilter:
-            process = sosfilt(glo.sos_high, process)    # 高通滤波
-        if glo.isNotchFilter:
-            process = sosfilt(glo.sos_notch, process)   # 陷波滤波
-        if glo.isBandPassFilter:
-            process = sosfilt(glo.sos_band, process)    # 带通滤波
+        if glo.isFilter:
+            if glo.isLowPassFilter:
+                process = sosfilt(glo.sos_low, process)     # 低通滤波
+            if glo.isHighPassFilter:
+                process = sosfilt(glo.sos_high, process)    # 高通滤波
+            if glo.isNotchFilter:
+                process = sosfilt(glo.sos_notch, process)   # 陷波滤波
+            if glo.isBandPassFilter:
+                process = sosfilt(glo.sos_band, process)    # 带通滤波
 
         data = process[-len_data:]  # 待显示数据(长度为len_data)
         
