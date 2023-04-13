@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'd:\Download\OneDrive - zju.edu.cn\code\EMGexe\EMG\ui\draw.ui'
+# Form implementation generated from reading ui file 'd:\Backup\OneDrive - zju.edu.cn\code\EMGexe\EMG\ui\draw.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -92,10 +92,16 @@ class Ui_Form(object):
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem3)
         self.btn_test = QtWidgets.QPushButton(self.chartTopFrame)
+        self.btn_test.setMaximumSize(QtCore.QSize(80, 16777215))
         self.btn_test.setObjectName("btn_test")
         self.horizontalLayout.addWidget(self.btn_test)
         self.btn_tab = QtWidgets.QPushButton(self.chartTopFrame)
-        self.btn_tab.setMaximumSize(QtCore.QSize(45, 23))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.btn_tab.sizePolicy().hasHeightForWidth())
+        self.btn_tab.setSizePolicy(sizePolicy)
+        self.btn_tab.setMaximumSize(QtCore.QSize(80, 16777215))
         self.btn_tab.setObjectName("btn_tab")
         self.horizontalLayout.addWidget(self.btn_tab)
         self.btn_reset = QtWidgets.QPushButton(self.chartTopFrame)
@@ -104,7 +110,7 @@ class Ui_Form(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.btn_reset.sizePolicy().hasHeightForWidth())
         self.btn_reset.setSizePolicy(sizePolicy)
-        self.btn_reset.setMaximumSize(QtCore.QSize(23, 23))
+        self.btn_reset.setMaximumSize(QtCore.QSize(23, 16777215))
         self.btn_reset.setObjectName("btn_reset")
         self.horizontalLayout.addWidget(self.btn_reset)
         self.btn_close = QtWidgets.QPushButton(self.chartTopFrame)
@@ -113,7 +119,7 @@ class Ui_Form(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.btn_close.sizePolicy().hasHeightForWidth())
         self.btn_close.setSizePolicy(sizePolicy)
-        self.btn_close.setMaximumSize(QtCore.QSize(23, 23))
+        self.btn_close.setMaximumSize(QtCore.QSize(23, 16777215))
         self.btn_close.setObjectName("btn_close")
         self.horizontalLayout.addWidget(self.btn_close)
         self.verticalLayout_2.addWidget(self.chartTopFrame)

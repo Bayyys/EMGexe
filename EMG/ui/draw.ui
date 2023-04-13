@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>664</width>
+    <width>668</width>
     <height>350</height>
    </rect>
   </property>
@@ -246,6 +246,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="btn_test">
+           <property name="maximumSize">
+            <size>
+             <width>80</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="text">
             <string>识别</string>
            </property>
@@ -253,10 +259,16 @@
          </item>
          <item>
           <widget class="QPushButton" name="btn_tab">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="maximumSize">
             <size>
-             <width>45</width>
-             <height>23</height>
+             <width>80</width>
+             <height>16777215</height>
             </size>
            </property>
            <property name="text">
@@ -274,8 +286,8 @@
            </property>
            <property name="maximumSize">
             <size>
-             <width>23</width>
-             <height>23</height>
+             <width>35</width>
+             <height>16777215</height>
             </size>
            </property>
            <property name="text">
@@ -293,8 +305,8 @@
            </property>
            <property name="maximumSize">
             <size>
-             <width>23</width>
-             <height>23</height>
+             <width>35</width>
+             <height>16777215</height>
             </size>
            </property>
            <property name="text">

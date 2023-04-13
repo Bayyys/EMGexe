@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'd:\Download\OneDrive - zju.edu.cn\code\EMGexe\EMG\ui\mainWindow.ui'
+# Form implementation generated from reading ui file 'd:\Backup\OneDrive - zju.edu.cn\code\EMGexe\EMG\ui\mainWindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
