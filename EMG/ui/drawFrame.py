@@ -16,7 +16,12 @@ import pyqtgraph as pg
 from pyqtgraph import GraphicsWidget, AxisItem
 
 class FFTThread(QThread):
-    '''FFT线程'''
+    '''FFT线程
+    
+    signal:
+    ----------------
+        fftSignal: 频谱图信号
+    '''
     fftSignal = pyqtSignal(np.ndarray, np.ndarray)
 
     def __init__(self, mainWin):
@@ -89,6 +94,8 @@ class MyPlotCanvas(pg.PlotWidget):
     '''绘图 canvas
     
     Attributes:
+    ----------------
+        mainWin: 主窗口
         XMAX: x轴最大值
         xdata: x轴数据
         ydata: y轴数据
@@ -106,7 +113,6 @@ class MyPlotCanvas(pg.PlotWidget):
         self.initData()
 
     def initData(self):
-        # 设置坐标轴Label
         self.setLabel('left', 'Amplitude(uV)')
         self.setLabel('bottom', 'Time(s)')
         self.getPlotItem().getAxis('bottom').enableAutoSIPrefix(False)  # 不自动缩放单位(横轴：时间)
@@ -127,6 +133,7 @@ class drawTabFrame(QFrame, Ui_canvasTab):
     '''标记数据段绘图
     
     Attributes:
+    ----------------
         tabCanvasList: 用于存储tabCanvas的列表(三维)
         findNum: 记录标记数据段的个数
         fromNum: 记录标记数据段的绘图起始位置
@@ -175,10 +182,13 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         self.btn_to.clicked.connect(self.btn_to_clicked)    # 跳转到指定页_点击
         self.sb_page.editingFinished.connect(self.sb_page_editingFinished)  # 显示当前页码范围 
 
-    def canvasTabDraw(self, fromNum, toNum):    # 画布Tab绘图
+    def canvasTabDraw(self, fromNum:int, toNum:int):    # 画布Tab绘图
         '''画布Tab绘图
-        fromNum: 绘图起始位置
-        toNum: 绘图结束位置
+
+        Attributes:
+        ----------------
+            fromNum: 绘图起始位置
+            toNum: 绘图结束位置
         '''
         size = toNum - fromNum + 1
         for i in range(size):
@@ -251,6 +261,7 @@ class drawFrameFile(QFrame, Ui_Form):    #, Ui_Form):
     '''文件绘图窗口
     
     Attributes:
+    ----------------
         history: 历史数据
     '''
 
@@ -338,6 +349,7 @@ class drawFrame(QFrame, Ui_Form):
     '''实时绘图窗口
     
     Attributes:
+    ----------------
         history: 待处理数据部分的原始数据, 保持长度为当前采样率
         data_add: 待处理数据部分长度，防止处理过程中数据堆积
         data_add_mutex: 待处理数据互斥锁
