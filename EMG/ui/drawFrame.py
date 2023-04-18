@@ -72,7 +72,6 @@ class FFTThread(QThread):
                 # self.mutex.unlock()
             time.sleep(0.05)
 
-# 绘制 频谱图
 class FFTCanvas(pg.PlotWidget):
     '''FFT 绘图 canvas'''
     def __init__(self, parent=None):

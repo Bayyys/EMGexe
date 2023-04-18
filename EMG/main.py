@@ -64,6 +64,16 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.tb_filter.addAction(act)
         # tb_filter 点击状态改变
         self.tb_filter.clicked.connect(self.tb_filter_clicked)
+
+    def tb_filter_clicked(self):
+        '''tb_filter 点击状态改变'''
+        if glo.isFilter:
+            self.tb_filter.setText('滤波器-OFF')
+            glo.isFilter = False
+        else:
+            self.tb_filter.setText('滤波器-ON')
+            glo.isFilter = True
+            
     
     def action_ser_set_clicked(self):   # 菜单栏-串口-配置
         '''菜单栏-串口-配置'''
@@ -551,7 +561,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     def updateCom(self, port_list):  # 更新串口号   --> 更新串口号线程：串口列表发生变化时触发
         '''更新串口号
         
-        Attributes:
+        Attribute:
         ----------
             port_list: 串口列表
         '''
@@ -592,7 +602,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     def updateData(self, data_list):    # 更新数据及图表    --> 串口读取线程：串口读取数据时触发
         '''更新数据及图表
         
-        Attributes:
+        Attribute:
         ----------
             data_list: 读取的数据列表
         '''

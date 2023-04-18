@@ -66,10 +66,14 @@ def __init__():
 
 def sendMessage(state, connect='usb', sample_rate=1000, channel=32):
     '''发送命令
-    state: start/stop
-    connect: usb/wifi
-    sample_rate: 250/500/1000/2000/4000/8000/16000
-    channel: 32/2'''
+
+    Attributes:
+    ----------
+        state: start/stop
+        connect: usb/wifi
+        sample_rate: 250/500/1000/2000/4000/8000/16000
+        channel: 32/2
+    '''
     global ser, message
     ser.flushInput()
     ser.flushOutput()
@@ -146,6 +150,7 @@ def add_history(value):
     '''添加数据
     
     Attributes:
+    ----------
         value: 实时测量数据'''
     global history, history
     # add_data(value)
@@ -165,8 +170,10 @@ def save_data(fileName, type):
     '''保存数据
     
     Attributes:
+    ----------
         fileName: 文件名(包括地址)
-        type: 文件类型'''
+        type: 文件类型
+    '''
     try:
         if type == "纯文本(*.txt)":
             np.savetxt(fileName, np.array(history), fmt='%lf', delimiter=' ',
@@ -185,12 +192,13 @@ def load_data(fileName, type):
     '''从文件加载数据
     
     Attributes:
+    ----------
         fileName: 文件名(包括地址)
         type: 文件类型
     
     Returns:
-        True: 加载成功
-        False: 加载失败
+    ----------
+        True/False
     '''
     global history
     try:
