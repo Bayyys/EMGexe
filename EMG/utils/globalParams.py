@@ -1,5 +1,6 @@
 import sys
-sys.path.append('..')
+import os
+sys.path.append(os.getcwd()+"\\EMG")
 from utils import decodeUtil
 from time import sleep
 import pandas as pd
@@ -15,7 +16,7 @@ def __init__():
     # 串口
     ser = None  # 串口
     com = ""    # 串口号
-    port = None
+    port = ""
     baudrate = 4608000
     bytesize = 8
     parity = 'N'

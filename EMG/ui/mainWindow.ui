@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1308</width>
-    <height>804</height>
+    <width>1014</width>
+    <height>770</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -27,10 +27,22 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_6">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QFrame" name="frameMain">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -45,8 +57,8 @@
        <item>
         <widget class="QScrollArea" name="scrollArea">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>4</horstretch>
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>6</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
@@ -61,8 +73,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>995</width>
-            <height>719</height>
+            <width>727</width>
+            <height>703</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -79,7 +91,7 @@
             <number>3</number>
            </property>
            <item>
-            <layout class="QVBoxLayout" name="layoutChart">
+            <layout class="QVBoxLayout" name="layout_Chart">
              <property name="spacing">
               <number>6</number>
              </property>
@@ -102,7 +114,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
            <horstretch>1</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -113,6 +125,9 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="tabPosition">
+          <enum>QTabWidget::North</enum>
+         </property>
          <property name="tabShape">
           <enum>QTabWidget::Rounded</enum>
          </property>
@@ -120,13 +135,22 @@
           <number>0</number>
          </property>
          <property name="elideMode">
-          <enum>Qt::ElideNone</enum>
+          <enum>Qt::ElideLeft</enum>
          </property>
          <property name="usesScrollButtons">
           <bool>true</bool>
          </property>
-         <property name="movable">
+         <property name="documentMode">
+          <bool>true</bool>
+         </property>
+         <property name="tabsClosable">
           <bool>false</bool>
+         </property>
+         <property name="movable">
+          <bool>true</bool>
+         </property>
+         <property name="tabBarAutoHide">
+          <bool>true</bool>
          </property>
          <widget class="QWidget" name="tab_measure">
           <property name="sizePolicy">
@@ -138,680 +162,594 @@
           <attribute name="title">
            <string>实时检测</string>
           </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_7">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="leftMargin">
+            <number>3</number>
+           </property>
+           <property name="topMargin">
+            <number>3</number>
+           </property>
+           <property name="rightMargin">
+            <number>3</number>
+           </property>
+           <property name="bottomMargin">
+            <number>3</number>
+           </property>
            <item>
-            <widget class="QFrame" name="frameRight">
+            <widget class="QGroupBox" name="layout_setting">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>设置</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_2">
+              <property name="leftMargin">
+               <number>3</number>
+              </property>
+              <property name="topMargin">
+               <number>3</number>
+              </property>
+              <property name="rightMargin">
+               <number>3</number>
+              </property>
+              <property name="bottomMargin">
+               <number>3</number>
+              </property>
+              <item>
+               <layout class="QGridLayout" name="connect">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SetDefaultConstraint</enum>
+                </property>
+                <item row="0" column="2">
+                 <widget class="QPushButton" name="btn_disconnect">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>停止</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QPushButton" name="btn_stop">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>暂停</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QPushButton" name="btn_start">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>开始</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QPushButton" name="btn_connect">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>连接</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLabel" name="lb_start">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                    <horstretch>2</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="baseSize">
+                   <size>
+                    <width>66</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="text">
+                   <string>等待连接...</string>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLabel" name="lb_connect">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                    <horstretch>2</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>66</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="baseSize">
+                   <size>
+                    <width>66</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="mouseTracking">
+                   <bool>false</bool>
+                  </property>
+                  <property name="contextMenuPolicy">
+                   <enum>Qt::DefaultContextMenu</enum>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::LeftToRight</enum>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="text">
+                   <string>等待连接...</string>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>true</bool>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QGridLayout" name="layout_channel">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="lb_sample_rate">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>采样率：</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QComboBox" name="cb_sample_rate">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>2</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="currentIndex">
+                   <number>2</number>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>250</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>500</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>1000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>2000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>4000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>6000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>8000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>16000</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QComboBox" name="cb_channel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>2</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="currentIndex">
+                   <number>1</number>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>2</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>32</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="lb_channel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>通道数：</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="Line" name="line_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QGridLayout" name="layout_dis">
+                <item row="0" column="1">
+                 <widget class="QComboBox" name="cb_xdis">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>2</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="currentIndex">
+                   <number>3</number>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>1</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>2</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>3</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>4</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="lb_ydis">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>幅度Y：(uV)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QSpinBox" name="sb_peak">
+                  <property name="maximum">
+                   <number>20000</number>
+                  </property>
+                  <property name="value">
+                   <number>150</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="lb_xdis">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>时基X：(s)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QComboBox" name="cb_ydis">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>2</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="currentIndex">
+                   <number>5</number>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>20</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>50</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>100</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>200</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>500</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>1000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>2000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>200000</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="lb_peak">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>识别峰值：(uV)</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="layout_filter">
+                <item>
+                 <widget class="QToolButton" name="btn_filter">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>滤波器-ON</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>false</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                  <property name="autoRepeat">
+                   <bool>true</bool>
+                  </property>
+                  <property name="popupMode">
+                   <enum>QToolButton::MenuButtonPopup</enum>
+                  </property>
+                  <property name="toolButtonStyle">
+                   <enum>Qt::ToolButtonTextBesideIcon</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btn_reset">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Reset</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="layout_file">
+                <item>
+                 <widget class="QPushButton" name="btn_filePath">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>存储路径</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="et_filePath">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>3</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="inputMask">
+                   <string/>
+                  </property>
+                  <property name="text">
+                   <string>C:/</string>
+                  </property>
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="Line" name="line_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="frameEditText">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>16777215</height>
-              </size>
+             <property name="title">
+              <string>频谱图</string>
              </property>
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout">
+             <layout class="QVBoxLayout" name="verticalLayout_3">
               <property name="spacing">
-               <number>0</number>
+               <number>3</number>
               </property>
               <property name="leftMargin">
-               <number>0</number>
+               <number>3</number>
               </property>
               <property name="topMargin">
-               <number>0</number>
+               <number>3</number>
               </property>
               <property name="rightMargin">
-               <number>0</number>
+               <number>3</number>
               </property>
               <property name="bottomMargin">
-               <number>0</number>
+               <number>3</number>
               </property>
               <item>
-               <widget class="QGroupBox" name="frameSetting">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
+               <layout class="QVBoxLayout" name="layout_FFT">
+                <property name="leftMargin">
+                 <number>3</number>
                 </property>
-                <property name="title">
-                 <string>设置</string>
+                <property name="topMargin">
+                 <number>3</number>
                 </property>
-                <layout class="QVBoxLayout" name="verticalLayout_2">
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>9</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>9</number>
-                 </property>
-                 <item>
-                  <layout class="QGridLayout" name="frameConnect">
-                   <property name="sizeConstraint">
-                    <enum>QLayout::SetDefaultConstraint</enum>
-                   </property>
-                   <item row="0" column="2">
-                    <widget class="QPushButton" name="btn_disconnect">
-                     <property name="enabled">
-                      <bool>false</bool>
-                     </property>
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>1</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>停止</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="2">
-                    <widget class="QPushButton" name="btn_stop">
-                     <property name="enabled">
-                      <bool>false</bool>
-                     </property>
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>1</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>暂停</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="0">
-                    <widget class="QPushButton" name="btn_start">
-                     <property name="enabled">
-                      <bool>false</bool>
-                     </property>
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>1</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>开始</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="0">
-                    <widget class="QPushButton" name="btn_connect">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>1</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>连接</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <widget class="QLabel" name="lb_start">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                       <horstretch>2</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="baseSize">
-                      <size>
-                       <width>66</width>
-                       <height>0</height>
-                      </size>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                     <property name="frameShape">
-                      <enum>QFrame::NoFrame</enum>
-                     </property>
-                     <property name="text">
-                      <string>等待连接...</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                     <property name="wordWrap">
-                      <bool>false</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="1">
-                    <widget class="QLabel" name="lb_connect">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                       <horstretch>2</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>66</width>
-                       <height>0</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="baseSize">
-                      <size>
-                       <width>66</width>
-                       <height>0</height>
-                      </size>
-                     </property>
-                     <property name="mouseTracking">
-                      <bool>false</bool>
-                     </property>
-                     <property name="contextMenuPolicy">
-                      <enum>Qt::DefaultContextMenu</enum>
-                     </property>
-                     <property name="layoutDirection">
-                      <enum>Qt::LeftToRight</enum>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                     <property name="frameShape">
-                      <enum>QFrame::NoFrame</enum>
-                     </property>
-                     <property name="text">
-                      <string>等待连接...</string>
-                     </property>
-                     <property name="scaledContents">
-                      <bool>true</bool>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                     </property>
-                     <property name="wordWrap">
-                      <bool>false</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <widget class="QFrame" name="frameCom">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
-                   </property>
-                   <layout class="QGridLayout" name="gridLayout">
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>0</number>
-                    </property>
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="lb_sample_rate">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                        <horstretch>1</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>采样率：</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="0">
-                     <widget class="QLabel" name="lb_channel_num">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                        <horstretch>1</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>通道数：</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <widget class="QComboBox" name="box_sample_rate">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                        <horstretch>2</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="currentIndex">
-                       <number>6</number>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>250</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>500</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>1000</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>2000</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>4000</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>6000</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>8000</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>16000</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
-                     <widget class="QComboBox" name="box_channel_num">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                        <horstretch>2</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="currentIndex">
-                       <number>0</number>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>2</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>32</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                   </layout>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="Line" name="line_2">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QFrame" name="frameDis">
-                   <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
-                   </property>
-                   <layout class="QGridLayout" name="gridLayout_5">
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>0</number>
-                    </property>
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="lb_ydis">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                        <horstretch>1</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>幅度Y：(uV)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <widget class="QComboBox" name="box_ydis">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                        <horstretch>2</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="currentIndex">
-                       <number>5</number>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>20</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>50</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>100</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>200</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>500</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>1000</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>2000</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>200000</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item row="2" column="0">
-                     <widget class="QLabel" name="lb_xdis1">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                        <horstretch>1</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>时基X：(s)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="1">
-                     <widget class="QComboBox" name="box_xdis">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                        <horstretch>2</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="currentIndex">
-                       <number>3</number>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>1</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>2</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>3</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>4</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item row="0" column="0">
-                     <widget class="QLabel" name="lb_pointLow">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                        <horstretch>1</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>识别峰值：(uV)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
-                     <widget class="QSpinBox" name="sb_pointLow">
-                      <property name="maximum">
-                       <number>20000</number>
-                      </property>
-                      <property name="value">
-                       <number>150</number>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </widget>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout">
-                   <item>
-                    <widget class="QToolButton" name="tb_filter">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>滤波器-ON</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>false</bool>
-                     </property>
-                     <property name="checked">
-                      <bool>false</bool>
-                     </property>
-                     <property name="autoRepeat">
-                      <bool>true</bool>
-                     </property>
-                     <property name="popupMode">
-                      <enum>QToolButton::MenuButtonPopup</enum>
-                     </property>
-                     <property name="toolButtonStyle">
-                      <enum>Qt::ToolButtonTextBesideIcon</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="btn_reset">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>Reset</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <widget class="QFrame" name="frameFile">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
-                   </property>
-                   <layout class="QGridLayout" name="gridLayout_2">
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>0</number>
-                    </property>
-                    <item row="0" column="0">
-                     <widget class="QPushButton" name="btn_filePath">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                        <horstretch>1</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>存储路径</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
-                     <widget class="QLineEdit" name="et_filePath">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                        <horstretch>3</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="inputMask">
-                       <string/>
-                      </property>
-                      <property name="text">
-                       <string>C:/</string>
-                      </property>
-                      <property name="readOnly">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item>
-               <widget class="QGroupBox" name="frameEditText">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
+                <property name="rightMargin">
+                 <number>3</number>
                 </property>
-                <property name="title">
-                 <string>频谱图</string>
+                <property name="bottomMargin">
+                 <number>3</number>
                 </property>
-                <layout class="QVBoxLayout" name="verticalLayout_3">
-                 <property name="spacing">
-                  <number>3</number>
-                 </property>
-                 <property name="leftMargin">
-                  <number>3</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>3</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>3</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>3</number>
-                 </property>
-                 <item>
-                  <layout class="QVBoxLayout" name="layoutFFT">
-                   <property name="leftMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>3</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>3</number>
-                   </property>
-                  </layout>
-                 </item>
-                </layout>
-               </widget>
+               </layout>
               </item>
              </layout>
             </widget>
@@ -838,25 +776,56 @@
            <string>文件读取</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_6">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
            <item>
-            <widget class="QFrame" name="frame">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
+            <layout class="QGridLayout" name="grid_load_file">
+             <item row="0" column="0">
+              <widget class="QLineEdit" name="file_et_path">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>2</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="inputMask">
+                <string/>
+               </property>
+               <property name="text">
+                <string>请先载入文件...</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QPushButton" name="file_btn_open">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>1</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>文件</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QPushButton" name="file_btn_dataload">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="text">
+                <string>载入实时测量数据</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QFrame" name="group_state_file">
+             <property name="enabled">
+              <bool>false</bool>
              </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -864,389 +833,68 @@
              <property name="frameShadow">
               <enum>QFrame::Raised</enum>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_8">
+             <layout class="QVBoxLayout" name="verticalLayout_9">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
               <item>
-               <layout class="QGridLayout" name="grid_load_file">
-                <item row="0" column="0">
-                 <widget class="QLineEdit" name="file_et_path">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>2</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="inputMask">
-                   <string/>
-                  </property>
-                  <property name="text">
-                   <string>请先载入文件...</string>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QPushButton" name="file_btn_open">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>1</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>文件</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0" colspan="2">
-                 <widget class="QPushButton" name="file_btn_dataload">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="text">
-                   <string>载入实时测量数据</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="QFrame" name="group_state_file">
+               <widget class="QGroupBox" name="group_draw_file">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
+                <property name="title">
+                 <string>绘制</string>
                 </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_9">
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <widget class="QGroupBox" name="group_draw_file">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="title">
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <item row="0" column="0">
+                  <widget class="QPushButton" name="file_btn_draw">
+                   <property name="text">
                     <string>绘制</string>
                    </property>
-                   <layout class="QGridLayout" name="gridLayout_4">
-                    <item row="0" column="0">
-                     <widget class="QPushButton" name="file_btn_draw">
-                      <property name="text">
-                       <string>绘制</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QPushButton" name="file_btn_reset">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Reset</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
                   </widget>
                  </item>
-                 <item>
-                  <widget class="QGroupBox" name="group_setting_file">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
+                 <item row="1" column="0">
+                  <widget class="QPushButton" name="file_btn_reset">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
-                   <property name="title">
-                    <string>状态设置</string>
+                   <property name="text">
+                    <string>Reset</string>
                    </property>
-                   <layout class="QVBoxLayout" name="verticalLayout_5">
-                    <property name="spacing">
-                     <number>6</number>
-                    </property>
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>9</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>9</number>
-                    </property>
-                    <item>
-                     <layout class="QGridLayout" name="group_filter_file">
-                      <property name="leftMargin">
-                       <number>3</number>
-                      </property>
-                      <property name="topMargin">
-                       <number>3</number>
-                      </property>
-                      <property name="rightMargin">
-                       <number>3</number>
-                      </property>
-                      <property name="bottomMargin">
-                       <number>3</number>
-                      </property>
-                      <property name="spacing">
-                       <number>9</number>
-                      </property>
-                      <item row="2" column="1">
-                       <widget class="QComboBox" name="file_box_xdis">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                          <horstretch>2</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="currentIndex">
-                         <number>0</number>
-                        </property>
-                        <item>
-                         <property name="text">
-                          <string>1</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>2</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>3</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>4</string>
-                         </property>
-                        </item>
-                       </widget>
-                      </item>
-                      <item row="3" column="1">
-                       <widget class="QComboBox" name="file_box_ydis">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                          <horstretch>2</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="currentIndex">
-                         <number>5</number>
-                        </property>
-                        <item>
-                         <property name="text">
-                          <string>20</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>50</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>100</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>200</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>500</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>1000</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>2000</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>200000</string>
-                         </property>
-                        </item>
-                       </widget>
-                      </item>
-                      <item row="3" column="0">
-                       <widget class="QLabel" name="file_lb_ydis">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                          <horstretch>1</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="text">
-                         <string>幅度：+/-(μV)</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="0">
-                       <widget class="QLabel" name="file_lb_channel_num">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                          <horstretch>1</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="text">
-                         <string>通道数：</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="1" column="0">
-                       <widget class="QLabel" name="file_lb_sample_rate">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                          <horstretch>1</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="text">
-                         <string>采样率：</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="2" column="0">
-                       <widget class="QLabel" name="file_lb_xdis1">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                          <horstretch>1</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="text">
-                         <string>时基：(s)</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="1">
-                       <widget class="QComboBox" name="file_box_channel_num">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                          <horstretch>2</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="currentIndex">
-                         <number>0</number>
-                        </property>
-                        <item>
-                         <property name="text">
-                          <string>2</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>32</string>
-                         </property>
-                        </item>
-                       </widget>
-                      </item>
-                      <item row="1" column="1">
-                       <widget class="QComboBox" name="file_box_sample_rate">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                          <horstretch>2</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="currentIndex">
-                         <number>6</number>
-                        </property>
-                        <item>
-                         <property name="text">
-                          <string>250</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>500</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>1000</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>2000</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>4000</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>6000</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>8000</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>16000</string>
-                         </property>
-                        </item>
-                       </widget>
-                      </item>
-                     </layout>
-                    </item>
-                   </layout>
                   </widget>
                  </item>
                 </layout>
                </widget>
               </item>
               <item>
-               <widget class="QGroupBox" name="group_params_file">
+               <widget class="QGroupBox" name="group_setting_file">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
-                <property name="title">
-                 <string>参数设置</string>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
                 </property>
-                <layout class="QVBoxLayout" name="verticalLayout_10">
+                <property name="title">
+                 <string>状态设置</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_5">
                  <property name="spacing">
-                  <number>0</number>
+                  <number>6</number>
                  </property>
                  <property name="leftMargin">
                   <number>0</number>
@@ -1258,10 +906,10 @@
                   <number>0</number>
                  </property>
                  <property name="bottomMargin">
-                  <number>0</number>
+                  <number>9</number>
                  </property>
                  <item>
-                  <layout class="QGridLayout" name="group_dis_file" rowstretch="0,0,0,0,0">
+                  <layout class="QGridLayout" name="group_filter_file">
                    <property name="leftMargin">
                     <number>3</number>
                    </property>
@@ -1277,189 +925,218 @@
                    <property name="spacing">
                     <number>9</number>
                    </property>
-                   <item row="3" column="1">
-                    <widget class="QSpinBox" name="file_sb_notch_cutoff">
-                     <property name="minimum">
-                      <number>40</number>
-                     </property>
-                     <property name="maximum">
-                      <number>60</number>
-                     </property>
-                     <property name="value">
-                      <number>50</number>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="0">
-                    <widget class="QCheckBox" name="file_ck_high">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>高通</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="0">
-                    <widget class="QCheckBox" name="file_ck_band">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>带通</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <widget class="QSpinBox" name="file_sb_low">
-                     <property name="buttonSymbols">
-                      <enum>QAbstractSpinBox::UpDownArrows</enum>
-                     </property>
-                     <property name="minimum">
-                      <number>1</number>
-                     </property>
-                     <property name="maximum">
-                      <number>50</number>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="3" column="2">
-                    <widget class="QSpinBox" name="file_sb_notch_param">
-                     <property name="minimum">
-                      <number>1</number>
-                     </property>
-                     <property name="maximum">
-                      <number>10</number>
-                     </property>
-                     <property name="value">
-                      <number>10</number>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="2">
-                    <widget class="QSpinBox" name="file_sb_band_stop">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimum">
-                      <number>1</number>
-                     </property>
-                     <property name="maximum">
-                      <number>100</number>
-                     </property>
-                     <property name="value">
-                      <number>50</number>
-                     </property>
-                    </widget>
-                   </item>
                    <item row="2" column="1">
-                    <widget class="QSpinBox" name="file_sb_high">
-                     <property name="buttonSymbols">
-                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                    <widget class="QComboBox" name="file_box_xdis">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                       <horstretch>2</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
                      </property>
-                     <property name="minimum">
-                      <number>1</number>
+                     <property name="currentIndex">
+                      <number>0</number>
                      </property>
-                     <property name="maximum">
-                      <number>50</number>
+                     <item>
+                      <property name="text">
+                       <string>1</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>3</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>4</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QComboBox" name="file_box_ydis">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                       <horstretch>2</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
                      </property>
+                     <property name="currentIndex">
+                      <number>5</number>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>20</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>50</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>100</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>200</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>500</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>1000</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>2000</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>200000</string>
+                      </property>
+                     </item>
                     </widget>
                    </item>
                    <item row="3" column="0">
-                    <widget class="QCheckBox" name="file_ck_notch">
+                    <widget class="QLabel" name="file_lb_ydis">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>1</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
                      <property name="text">
-                      <string>陷波</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="4" column="1">
-                    <widget class="QSpinBox" name="file_sb_band_pass">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="buttonSymbols">
-                      <enum>QAbstractSpinBox::UpDownArrows</enum>
-                     </property>
-                     <property name="minimum">
-                      <number>1</number>
-                     </property>
-                     <property name="maximum">
-                      <number>100</number>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="0">
-                    <widget class="QCheckBox" name="file_ck_low">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>低通</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="2" rowspan="2">
-                    <widget class="QCheckBox" name="file_ck_baseline">
-                     <property name="text">
-                      <string>基线移除</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
+                      <string>幅度：+/-(μV)</string>
                      </property>
                     </widget>
                    </item>
                    <item row="0" column="0">
-                    <widget class="QPushButton" name="file_btn_delete">
+                    <widget class="QLabel" name="file_lb_channel_num">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>1</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="text">
-                      <string>Delete</string>
+                      <string>通道数：</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="file_lb_sample_rate">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>1</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="text">
+                      <string>采样率：</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="file_lb_xdis1">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>1</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="text">
+                      <string>时基：(s)</string>
                      </property>
                     </widget>
                    </item>
                    <item row="0" column="1">
-                    <widget class="QSpinBox" name="file_sb_delete_low">
-                     <property name="buttonSymbols">
-                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                    <widget class="QComboBox" name="file_box_channel_num">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                       <horstretch>2</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
                      </property>
-                     <property name="minimum">
+                     <property name="currentIndex">
                       <number>0</number>
                      </property>
-                     <property name="maximum">
-                      <number>1000</number>
-                     </property>
+                     <item>
+                      <property name="text">
+                       <string>2</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>32</string>
+                      </property>
+                     </item>
                     </widget>
                    </item>
-                   <item row="0" column="2">
-                    <widget class="QSpinBox" name="file_sb_delete_high">
-                     <property name="buttonSymbols">
-                      <enum>QAbstractSpinBox::UpDownArrows</enum>
+                   <item row="1" column="1">
+                    <widget class="QComboBox" name="file_box_sample_rate">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                       <horstretch>2</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
                      </property>
-                     <property name="minimum">
-                      <number>1</number>
+                     <property name="currentIndex">
+                      <number>6</number>
                      </property>
-                     <property name="maximum">
-                      <number>1000</number>
-                     </property>
+                     <item>
+                      <property name="text">
+                       <string>250</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>500</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>1000</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>2000</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>4000</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>6000</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>8000</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>16000</string>
+                      </property>
+                     </item>
                     </widget>
                    </item>
                   </layout>
@@ -1467,24 +1144,255 @@
                 </layout>
                </widget>
               </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="group_params_file">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="title">
+              <string>参数设置</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_10">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>9</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
               <item>
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
+               <layout class="QGridLayout" name="group_dis_file" rowstretch="0,0,0,0,0">
+                <property name="leftMargin">
+                 <number>3</number>
                 </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Expanding</enum>
+                <property name="topMargin">
+                 <number>3</number>
                 </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>600</height>
-                 </size>
+                <property name="rightMargin">
+                 <number>3</number>
                 </property>
-               </spacer>
+                <property name="bottomMargin">
+                 <number>3</number>
+                </property>
+                <property name="spacing">
+                 <number>9</number>
+                </property>
+                <item row="3" column="1">
+                 <widget class="QSpinBox" name="file_sb_notch_cutoff">
+                  <property name="minimum">
+                   <number>40</number>
+                  </property>
+                  <property name="maximum">
+                   <number>60</number>
+                  </property>
+                  <property name="value">
+                   <number>50</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QCheckBox" name="file_ck_high">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>高通</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QCheckBox" name="file_ck_band">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>带通</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QSpinBox" name="file_sb_low">
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::UpDownArrows</enum>
+                  </property>
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="maximum">
+                   <number>50</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="2">
+                 <widget class="QSpinBox" name="file_sb_notch_param">
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="maximum">
+                   <number>10</number>
+                  </property>
+                  <property name="value">
+                   <number>10</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="2">
+                 <widget class="QSpinBox" name="file_sb_band_stop">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="maximum">
+                   <number>100</number>
+                  </property>
+                  <property name="value">
+                   <number>50</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QSpinBox" name="file_sb_high">
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::UpDownArrows</enum>
+                  </property>
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="maximum">
+                   <number>50</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QCheckBox" name="file_ck_notch">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>陷波</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QSpinBox" name="file_sb_band_pass">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::UpDownArrows</enum>
+                  </property>
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="maximum">
+                   <number>100</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QCheckBox" name="file_ck_low">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>低通</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2" rowspan="2">
+                 <widget class="QCheckBox" name="file_ck_baseline">
+                  <property name="text">
+                   <string>基线移除</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QPushButton" name="file_btn_delete">
+                  <property name="text">
+                   <string>Delete</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QSpinBox" name="file_sb_delete_low">
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::UpDownArrows</enum>
+                  </property>
+                  <property name="minimum">
+                   <number>0</number>
+                  </property>
+                  <property name="maximum">
+                   <number>1000</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QSpinBox" name="file_sb_delete_high">
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::UpDownArrows</enum>
+                  </property>
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="maximum">
+                   <number>1000</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>187</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -1500,7 +1408,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1308</width>
+     <width>1014</width>
      <height>23</height>
     </rect>
    </property>
