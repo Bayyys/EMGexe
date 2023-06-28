@@ -2,8 +2,6 @@ import sys
 import os
 sys.path.append(os.getcwd()+"\\EMG")
 import re
-import serial
-import time
 from scipy.signal import butter
 import utils.globalParams as glo
 

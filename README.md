@@ -84,3 +84,7 @@
 -  升级到 `PyQt6`
 -  优化项目结构
 -  设置测试文件夹, 进行框架测试
+
+## 23.06.28
+
+- 控件优化进展: `SerialDialog` `CanvasFrame` `MainWin`

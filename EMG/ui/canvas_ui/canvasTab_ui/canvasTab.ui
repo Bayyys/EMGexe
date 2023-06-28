@@ -53,7 +53,10 @@
    <item>
     <widget class="QScrollArea" name="plotFrame">
      <property name="verticalScrollBarPolicy">
-      <enum>Qt::ScrollBarAsNeeded</enum>
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
      <property name="widgetResizable">
       <bool>true</bool>
@@ -68,8 +71,24 @@
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
-        <layout class="QHBoxLayout" name="plotLayout2"/>
+        <layout class="QHBoxLayout" name="plotLayout2">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetFixedSize</enum>
+         </property>
+        </layout>
        </item>
       </layout>
      </widget>

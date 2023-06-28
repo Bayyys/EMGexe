@@ -40,17 +40,17 @@ class serialDialog(QtWidgets.QDialog, Ui_serialDialog):
             self.moreFrame.setVisible(True)
             self.btn_more.setText('更多参数∧')
     
-    def getSerParams(self):
-        return (self.box_port.currentText(),    # 串口号
-                self.box_baudrate.currentText(),  # 波特率
-                self.box_bytesize.currentText(),   # 数据位
-                self.box_parity.currentText(),    # 数据校验位
-                self.box_stopbits.currentText(),   # 数据停止位
-                self.box_timeout.currentText(),    # 写超时
-                self.box_control.currentText(),    # 控制位
-                self.box_write_timeout.currentText(),    # 写超时
-                self.box_inter_byte_timeout.currentText(),    # 字节间隔超时
-                self.box_exclusive.currentText())    # 独占模式)
+    def getSerParams(self) -> dict:
+        return {"port": self.box_port.currentText(),    # 串口号
+                "baudrate": self.box_baudrate.currentText(),    # 波特率
+                "bytesize": self.box_bytesize.currentText(),    # 数据位
+                "parity": self.box_parity.currentText(),    # 数据校验位
+                "stopbits": self.box_stopbits.currentText(),    # 数据停止位
+                "timeout": self.box_timeout.currentText(),  # 写超时
+                "xonxoff": self.box_control.currentText(),  # 控制位
+                "write_timeout": self.box_write_timeout.currentText(),  # 写超时
+                "inter_byte_timeout": self.box_inter_byte_timeout.currentText(),    # 字节间隔超时
+                "exclusive": self.box_exclusive.currentText()}  # 独占模式
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

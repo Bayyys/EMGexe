@@ -36,7 +36,7 @@ def serialClose(ser: serial.Serial | None = ...) -> bool:   # 关闭串口
     ----------------
         ser: 串口对象
     '''
-    if ser == None or ser.is_open == False:
+    if not serialIsOpen(ser):
         print("serialClose: 串口不存在或已关闭")
         return False
     try:

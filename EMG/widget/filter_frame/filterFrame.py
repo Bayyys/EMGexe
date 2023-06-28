@@ -7,7 +7,7 @@ from PyQt6 import QtWidgets
 from ui.filterSetting_ui.filter import Ui_formtest
 # utils
 
-class filterWidget(QtWidgets.QWidget, Ui_formtest):
+class filterFrame(QtWidgets.QFrame, Ui_formtest):
     def __init__(self, parent) -> None:
         super().__init__()
         self.parent = parent
@@ -18,6 +18,6 @@ class filterWidget(QtWidgets.QWidget, Ui_formtest):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    filter = filterWidget(app)
+    filter = filterFrame(app)
     filter.show()
     sys.exit(app.exec())

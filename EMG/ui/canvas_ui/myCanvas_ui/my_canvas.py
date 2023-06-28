@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'd:\Download\OneDrive - zju.edu.cn\code\EMGexe\EMG\ui\canvas_ui\canvas.ui'
+# Form implementation generated from reading ui file 'd:\Download\OneDrive - zju.edu.cn\code\EMGexe\EMG\ui\canvas_ui\canvasSingle_ui\my_canvas.ui'
 #
 # Created by: PyQt6 UI code generator 6.4.2
 #
@@ -9,21 +9,22 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_canvas(object):
-    def setupUi(self, canvas):
-        canvas.setObjectName("canvas")
-        canvas.resize(668, 350)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
+class Ui_myCanvas(object):
+    def setupUi(self, myCanvas):
+        myCanvas.setObjectName("myCanvas")
+        myCanvas.resize(638, 250)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(canvas.sizePolicy().hasHeightForWidth())
-        canvas.setSizePolicy(sizePolicy)
-        canvas.setMinimumSize(QtCore.QSize(0, 350))
-        self.verticalLayout = QtWidgets.QVBoxLayout(canvas)
+        sizePolicy.setHeightForWidth(myCanvas.sizePolicy().hasHeightForWidth())
+        myCanvas.setSizePolicy(sizePolicy)
+        myCanvas.setMinimumSize(QtCore.QSize(0, 0))
+        self.verticalLayout = QtWidgets.QVBoxLayout(myCanvas)
+        self.verticalLayout.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetNoConstraint)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.chartFrame = QtWidgets.QFrame(parent=canvas)
+        self.chartFrame = QtWidgets.QFrame(parent=myCanvas)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -171,23 +172,23 @@ class Ui_canvas(object):
         self.verticalLayout_2.addWidget(self.plotFrame)
         self.verticalLayout.addWidget(self.chartFrame)
 
-        self.retranslateUi(canvas)
-        QtCore.QMetaObject.connectSlotsByName(canvas)
+        self.retranslateUi(myCanvas)
+        QtCore.QMetaObject.connectSlotsByName(myCanvas)
 
-    def retranslateUi(self, canvas):
+    def retranslateUi(self, myCanvas):
         _translate = QtCore.QCoreApplication.translate
-        canvas.setWindowTitle(_translate("canvas", "Form"))
-        self.lb_num.setText(_translate("canvas", "1"))
-        self.lb_minInfo.setText(_translate("canvas", "min:"))
-        self.lb_min.setText(_translate("canvas", "0.000"))
-        self.lb_min_unit.setText(_translate("canvas", "μV"))
-        self.lb_maxInfo.setText(_translate("canvas", "max:"))
-        self.lb_max.setText(_translate("canvas", "0.000"))
-        self.lb_max_unit.setText(_translate("canvas", "μV"))
-        self.lb_rmsInfo.setText(_translate("canvas", "rms:"))
-        self.lb_rms.setText(_translate("canvas", "0.000"))
-        self.lb_rms_unit.setText(_translate("canvas", "μV"))
-        self.btn_identify.setText(_translate("canvas", "识别"))
-        self.btn_tab.setText(_translate("canvas", "∨显示"))
-        self.btn_reset.setText(_translate("canvas", "〇"))
-        self.btn_close.setText(_translate("canvas", "×"))
+        myCanvas.setWindowTitle(_translate("myCanvas", "Form"))
+        self.lb_num.setText(_translate("myCanvas", "1"))
+        self.lb_minInfo.setText(_translate("myCanvas", "min:"))
+        self.lb_min.setText(_translate("myCanvas", "0.000"))
+        self.lb_min_unit.setText(_translate("myCanvas", "μV"))
+        self.lb_maxInfo.setText(_translate("myCanvas", "max:"))
+        self.lb_max.setText(_translate("myCanvas", "0.000"))
+        self.lb_max_unit.setText(_translate("myCanvas", "μV"))
+        self.lb_rmsInfo.setText(_translate("myCanvas", "rms:"))
+        self.lb_rms.setText(_translate("myCanvas", "0.000"))
+        self.lb_rms_unit.setText(_translate("myCanvas", "μV"))
+        self.btn_identify.setText(_translate("myCanvas", "识别"))
+        self.btn_tab.setText(_translate("myCanvas", "∨显示"))
+        self.btn_reset.setText(_translate("myCanvas", "〇"))
+        self.btn_close.setText(_translate("myCanvas", "×"))

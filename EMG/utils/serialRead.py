@@ -24,11 +24,7 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)
         super().__init__(parent)
         self.ser = serial
         self.channel = int(channel)
-        self.initUI()
         self.initValues()
-    
-    def initUI(self):
-        ...
     
     def initValues(self):
         self.data_remain = b''
@@ -53,8 +49,8 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)
     
     def __del__(self):
         self.is_running = False
-        self.quit()
-        self.wait()
+        # self.quit()
+        # self.wait()
 
     def run(self):
         print("serialRead start")
@@ -82,7 +78,7 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)
         ----------------
             num_list: 解码后的数据列表
         '''
-        num_dict = {}
+        num_dict = {i: [] for i in range(self.channel)}
         self.fall = b''
         if len(self.data_remain) > 0:
             data = self.data_remain + data
@@ -92,9 +88,9 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)
                     take = 0x01 << (index % 8)
                     offset = index // 8
                     if data[self.packetPfall + offset] & take or data[self.packetNfall + offset] & take: # 判断通道数据是否有效
-                        num_dict[index] = 0.0
+                        num_dict[index].append(0.0)
                     else:
-                        num_dict[index] = self.bytestoFloat(data[self.packetIndex[index]: self.packetIndex[index] + 4])
+                        num_dict[index].append(self.bytestoFloat(data[self.packetIndex[index]: self.packetIndex[index] + 4]))
                 self.fall += data[self.packetPfall: self.packetParity]
                 data = data[self.packetParity+1:]
             else:
