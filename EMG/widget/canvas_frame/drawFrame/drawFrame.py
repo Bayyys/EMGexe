@@ -4,13 +4,13 @@ import typing
 from PyQt6 import QtCore, QtGui
 sys.path.append(os.getcwd()+"\\EMG")
 import numpy as np
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QThread
 from PyQt6.QtWidgets import QApplication, QFrame, QWidget, QVBoxLayout, QScrollArea, QSizePolicy, QWidgetAction, QAbstractScrollArea
 # ui
 from ui.canvas_ui.draw_frame_ui import Ui_drawFrame
 from widget.canvas_frame.drawFrame.drawSingleFrame.drawSingleFrame import drawSingleCanvas
 
-class drawFrame(QFrame, Ui_drawFrame):
+class drawFrame(QFrame, Ui_drawFrame, QThread):
     def __init__(self) -> None:
         super().__init__()
         self.initUI()
@@ -46,7 +46,7 @@ class drawFrame(QFrame, Ui_drawFrame):
             self.chartList[i].hide()
         self.resizeEvent(None)
     
-    def updateDate(self, data: dict):
+    def updateData(self, data: list):
         for i in range(self.chartNum):
             self.chartList[i].updateData(data[i])
     

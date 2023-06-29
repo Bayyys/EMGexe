@@ -69,19 +69,19 @@ class serialUtilTestWidget(QMainWindow, Ui_serialUtilTestWin):
             return
         serialUtils.serialWrite(self.serial, "start", channel=self.cb_channel.currentText(), sample_rate=self.cb_rate.currentText())
         self.serialReadThread = serialRead(self, self.serial, self.cb_channel.currentText())
-        self.serialReadThread.dataUpdate.connect(self.et_original_update)
+        # self.serialReadThread.dataUpdate.connect(self.et_original_update)
         self.serialReadThread.dataDecodeUpdate.connect(self.et_decode_update)
         self.serialReadThread.start()
     
-    def et_original_update(self, data: bytes=b''):
-        self.et_original.append(str(data))
+    # def et_original_update(self, data: bytes=b''):
+    #     self.et_original.append(str(data))
     
-    def et_decode_update(self, data: dict={}):
+    def et_decode_update(self, data: list=[]):
         self.et_decode.append(str(data))
 
     def btn_pause_clicked(self):
         print("停止打印")
-        self.serialReadThread.__del__()
+        self.serialReadThread.del_thread()
         ...
 
     def close(self) -> bool:

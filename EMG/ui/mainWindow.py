@@ -284,7 +284,7 @@ class Ui_MainWindow(object):
         self.btn_filter.setSizePolicy(sizePolicy)
         self.btn_filter.setCheckable(False)
         self.btn_filter.setChecked(False)
-        self.btn_filter.setAutoRepeat(True)
+        self.btn_filter.setAutoRepeat(False)
         self.btn_filter.setPopupMode(QtWidgets.QToolButton.ToolButtonPopupMode.MenuButtonPopup)
         self.btn_filter.setToolButtonStyle(QtCore.Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.btn_filter.setObjectName("btn_filter")

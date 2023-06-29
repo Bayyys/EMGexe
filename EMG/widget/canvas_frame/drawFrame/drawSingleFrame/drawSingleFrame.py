@@ -42,13 +42,13 @@ class drawSingleCanvas(MyCanvas):
         if e.key() == Qt.Key_Enter:
             self.canvas.zoomReset()
         
-    def resizeEvent(cls, a0: QWidget.resizeEvent) -> None:
-        if cls.canvas.getPlotItem().height() < 200:
-            cls.canvas.getPlotItem().showLabel('bottom', show=False)
-            cls.canvas.getPlotItem().showLabel('left', show=False)
+    def resizeEvent(self, a0: QWidget.resizeEvent) -> None:
+        if self.canvas.getPlotItem().height() < 200:
+            self.canvas.getPlotItem().showLabel('bottom', show=False)
+            self.canvas.getPlotItem().showLabel('left', show=False)
         else:
-            cls.canvas.getPlotItem().showLabel('bottom', show=True)
-            cls.canvas.getPlotItem().showLabel('left', show=True)
+            self.canvas.getPlotItem().showLabel('bottom', show=True)
+            self.canvas.getPlotItem().showLabel('left', show=True)
         return super().resizeEvent(a0)
 
     def closeEvent(self, event=None) -> None:   # 关闭事件

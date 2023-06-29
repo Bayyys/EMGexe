@@ -617,7 +617,7 @@
                    <bool>false</bool>
                   </property>
                   <property name="autoRepeat">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                   <property name="popupMode">
                    <enum>QToolButton::MenuButtonPopup</enum>

@@ -1,6 +1,7 @@
 import serial
 import serial.tools.list_ports
 from PyQt6.QtCore import QObject, QThread, pyqtSignal
+import numpy as np
 
 
 class serialRead(QThread):  # 读取串口数据线程(32通道)
@@ -17,10 +18,10 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)
     serDisconnect = pyqtSignal()
     dataReadUpdate = pyqtSignal(list)
     dataUpdate = pyqtSignal(bytes)
-    dataDecodeUpdate = pyqtSignal(dict)
+    dataDecodeUpdate = pyqtSignal(list)
     is_running = True
 
-    def __init__(self, parent: QObject | None = ..., serial: serial.Serial = ..., channel: int | str=32) -> None:
+    def __init__(self, parent: QObject | None = ..., serial: serial.Serial | None=..., channel: int | str=32) -> None:
         super().__init__(parent)
         self.ser = serial
         self.channel = int(channel)
@@ -44,10 +45,11 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)
             self.packetPfall =  dataEnd # Pfall: 4Byte(136-139)
             self.packetNfall = dataEnd+4 # Nfall: 4Byte(140-143)
             self.packetParity = dataEnd+5 # 校验位: 1Bytes(144)
-        self.fall = b''
+        # self.fall = b''
+        self.data_num = 0
         ...
-    
-    def __del__(self):
+
+    def del_thread(self) -> None:
         self.is_running = False
         # self.quit()
         # self.wait()
@@ -55,19 +57,23 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)
     def run(self):
         print("serialRead start")
         while(self.is_running):
-            try:
-                if self.ser.is_open:
-                    if self.ser.in_waiting:
-                        data = self.ser.read(self.ser.in_waiting)
-                        self.dataUpdate.emit(self.fall)
-                        self.dataDecodeUpdate.emit(self.bytesSplit(data))
-                else:   # 串口断开
+            if self.ser is None:
+                ...
+            else:
+                try:
+                    if self.ser.is_open:
+                        if self.ser.in_waiting:
+                            data = self.ser.read(self.ser.in_waiting)
+                            # self.dataUpdate.emit(self.fall)
+                            self.dataDecodeUpdate.emit(self.bytesSplit(data))
+                            # print(self.data_num)
+                    else:   # 串口断开
+                        print("serialRead stop")
+                except:
                     print("serialRead stop")
-            except:
-                print("serialRead stop")
             QThread.msleep(10)
     
-    def bytesSplit(self, data) -> dict:
+    def bytesSplit(self, data) -> list:
         '''解码数据
         
         Attribute:
@@ -78,8 +84,8 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)
         ----------------
             num_list: 解码后的数据列表
         '''
-        num_dict = {i: [] for i in range(self.channel)}
-        self.fall = b''
+        num_dict = [np.array([]) for i in range(self.channel)]
+        # self.fall = b''
         if len(self.data_remain) > 0:
             data = self.data_remain + data
         while len(data) > 145:
@@ -88,11 +94,15 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)
                     take = 0x01 << (index % 8)
                     offset = index // 8
                     if data[self.packetPfall + offset] & take or data[self.packetNfall + offset] & take: # 判断通道数据是否有效
-                        num_dict[index].append(0.0)
+                        num_dict[index] = np.append(num_dict[index], 0.0)
                     else:
-                        num_dict[index].append(self.bytestoFloat(data[self.packetIndex[index]: self.packetIndex[index] + 4]))
-                self.fall += data[self.packetPfall: self.packetParity]
+                        decode = self.bytestoFloat(data[self.packetIndex[index]: self.packetIndex[index] + 4])
+                        if decode > 10000:
+                            decode = 0.0
+                        num_dict[index] = np.append(num_dict[index], decode)
+                # self.fall += data[self.packetPfall: self.packetParity]
                 data = data[self.packetParity+1:]
+                self.data_num += 1
             else:
                 data = data[1:]
         self.data_remain = data

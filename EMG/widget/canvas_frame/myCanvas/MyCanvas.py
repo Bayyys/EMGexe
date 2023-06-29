@@ -1,5 +1,6 @@
 import sys
 import os
+import typing
 sys.path.append(os.getcwd()+"\\EMG")
 import random
 import numpy as np
@@ -40,8 +41,8 @@ class MyPlotCanvas(pg.PlotWidget):
         self.setLabel('bottom', 'Time(s)')
         # 设置坐标轴范围及刻度
         self.getPlotItem().getAxis('bottom').enableAutoSIPrefix(False)  # 不自动缩放单位(横轴：时间)
-        self.getPlotItem().getAxis('bottom').setScale(1 / 4000)  # 单位放缩: 1s = 1 / 采样率
-        self.getPlotItem().getAxis('bottom').setTickSpacing(1, 0.5) # 设置刻度间隔
+        # self.getPlotItem().getAxis('bottom').setScale(1 / 4000)  # 单位放缩: 1s = 1 / 采样率
+        # self.getPlotItem().getAxis('bottom').setTickSpacing(1, 0.5) # 设置刻度间隔
         self.getPlotItem().getAxis('left').enableAutoSIPrefix(False)    # 不自动缩放单位(纵轴：幅值)
         self.getPlotItem().getAxis('left').setScale(1) # / 1_000_000)  # 单位放缩: 1μV
         self.getPlotItem().getAxis('left').setStyle(autoReduceTextSpace=True)
@@ -89,8 +90,8 @@ class MyCanvas(QFrame, Ui_myCanvas):
         self.canvas.curve.setData(
             self.canvas.xdata[-self.canvas.XDIS:], self.canvas.ydata[-self.canvas.XDIS:])
     
-    def updateData(self, data: list):
-        self.canvas.curve.setData([random.random() for i in range(100)])
+    def updateData(self, data: typing.Any):
+        self.canvas.curve.setData(data)
 
     def keyPressEvent(self, e) -> None: # 键盘事件
         if e.key() == Qt.Key.Key_R: # 重置缩放

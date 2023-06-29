@@ -8,9 +8,9 @@ from widget.main_mainWindow.mainWin import MyWindow
 class mainWin(MyWindow):
     def __init__(self) -> None:
         super().__init__()
-        self.initUI_MyWindow()
+        self.initUI()
     
-    def initUI_MyWindow(self):
+    def initUI(self):
         ...
 
 if __name__ == '__main__':

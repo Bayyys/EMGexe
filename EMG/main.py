@@ -8,15 +8,17 @@ from widget.serial_dialog.serialDialog import serialDialog
 # utils
 from utils.getCom import getCom
 from utils.serialRead import serialRead
+from utils.dataProcess import DataProcess
 import utils.serialUtils as serialUtils
 
 class mainWin(MyWindow):
     def __init__(self) -> None:
         super().__init__()
-        self.initUI_mainWin()
-        self.initValues_mainWin()
+        self.initUI()
+        self.initValues()
     
-    def initUI_mainWin(self):
+    def initUI(self):
+        super().initUI()
         self.drawFrame = drawFrame()
         self.chart_frame.layout().addWidget(self.drawFrame)
         self.cb_channel.currentTextChanged.connect(self.cb_channel_currentTextChanged)
@@ -25,7 +27,7 @@ class mainWin(MyWindow):
         self.btn_start.clicked.connect(self.btn_start_clicked)
         self.btn_stop.clicked.connect(self.btn_stop_clicked)
     
-    def initValues_mainWin(self):
+    def initValues(self):
         self.serialDialog = serialDialog()
         self.port = {}
         self.ser = None
@@ -44,27 +46,35 @@ class mainWin(MyWindow):
                 print("串口打开失败!")
     
     def btn_disconnect_clicked(self):
+        try:
+            self.btn_stop_clicked()
+        except:
+            ...
         if serialUtils.serialClose(self.ser):
             print("串口关闭成功!")
         else:
             print("串口关闭失败!")
     
     def btn_start_clicked(self):
-        if not serialUtils.serialIsOpen(self.ser):
-            print("串口未打开!")
-            return
         serialUtils.serialWrite(self.ser, state='start', connect='usb', sample_rate=self.cb_rate.currentText(), channel=self.cb_channel.currentText())
-        self.serialReadThread = serialRead(self, self.ser, self.cb_channel.currentText())
-        # self.serialReadThread.dataUpdate.connect(self.drawFrame.updateData)
-        self.serialReadThread.dataDecodeUpdate.connect(self.drawFrame.updateDate)
-        self.serialReadThread.start()
-    
-    def test(self, data):
-        print(data)
-    
+        self.serial_read_thread = serialRead(self, self.ser, self.cb_channel.currentText())
+        self.data_process_thread = DataProcess(self, self.cb_channel.currentText(), self.cb_rate.currentText(), True if self.btn_filter.text() == "滤波器-ON" else False, self.filterWidget.getParameters())
+        self.serial_read_thread.dataDecodeUpdate.connect(self.data_process_thread.put_data)
+        self.data_process_thread.data_signal.connect(self.drawFrame.updateData)
+        self.filterWidget.filter_update_signal.connect(self.data_process_thread.updateFilterParam)
+        self.serial_read_thread.start()
+        self.data_process_thread.start()
+
     def btn_stop_clicked(self):
-        self.serialReadThread.__del__()
-        self.serialReadThread = None
+        self.serial_read_thread.del_thread()
+        self.data_process_thread.del_thread()
+
+    def btn_filter_clicked(self):
+        super(mainWin, self).btn_filter_clicked()
+        try:
+            self.data_process_thread.isFilter = True if self.btn_filter.text() == "滤波器-ON" else False
+        except:
+            ...
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)    # 创建应用程序

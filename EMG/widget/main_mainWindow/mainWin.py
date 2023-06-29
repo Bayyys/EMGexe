@@ -9,9 +9,9 @@ from widget.filter_frame.filterFrame import filterFrame
 class MyWindow(QMainWindow, Ui_MainWindow):
     def __init__(self) -> None:
         super().__init__()
-        self.initUI_MyWindow()
+        self.initUI()
     
-    def initUI_MyWindow(self):
+    def initUI(self):
         self.setupUi(self)  # 初始化UI
         # QComboBox
         self.cb_channel.clear() # 通道数
