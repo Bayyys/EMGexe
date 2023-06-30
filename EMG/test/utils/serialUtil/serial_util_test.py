@@ -70,7 +70,7 @@ class serialUtilTestWidget(QMainWindow, Ui_serialUtilTestWin):
         serialUtils.serialWrite(self.serial, "start", channel=self.cb_channel.currentText(), sample_rate=self.cb_rate.currentText())
         self.serialReadThread = serialRead(self, self.serial, self.cb_channel.currentText())
         # self.serialReadThread.dataUpdate.connect(self.et_original_update)
-        self.serialReadThread.dataDecodeUpdate.connect(self.et_decode_update)
+        self.serialReadThread.serial_read_data_decode_update_signal.connect(self.et_decode_update)
         self.serialReadThread.start()
     
     # def et_original_update(self, data: bytes=b''):

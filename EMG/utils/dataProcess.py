@@ -9,8 +9,9 @@ from queue import Queue
 import numpy as np
 import scipy.signal as signal
 
-class DataProcess(QThread):
-    data_signal = pyqtSignal(list)
+class dataProcess(QThread):
+    """数据处理线程"""
+    data_process_signal = pyqtSignal(list)
 
     def __init__(self, parent: QObject | None = ..., channel: str|int=32, rate: str|int=1000, isFilter: bool=True, filter_dict: dict={}) -> None:
         super().__init__(parent)
@@ -102,11 +103,11 @@ class DataProcess(QThread):
     def run(self) -> None:
         while self.is_running:
             if self.process():
-                self.data_signal.emit(self.data_processd_lsit)
+                self.data_process_signal.emit(self.data_processd_lsit)
             QThread.msleep(10)
             
 if __name__ == '__main__':
-    d = DataProcess(None, 32)
+    d = dataProcess(None, 32)
     time_start = time.time()
     for i in range(10000):
         d.put_data()

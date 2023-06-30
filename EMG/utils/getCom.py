@@ -4,13 +4,13 @@ from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtWidgets import QComboBox
 
 class getCom(QThread):  # 获取串口号线程
-    '''获取串口号线程
+    """获取串口号线程
 
     Signal:
     ----------------
         comUpdate: 串口号更新信号(检测串口的变化, 发生变化传递更新串口号列表)
             emit: port_list_orignal: 串口号列表
-    '''
+    """
     getCom_portChanged = pyqtSignal(bool, list)
     is_running = True
 

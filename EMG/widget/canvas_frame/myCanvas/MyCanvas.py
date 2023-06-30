@@ -27,24 +27,25 @@ class MyPlotCanvas(pg.PlotWidget):
         super().__init__()
         self.mainWin = parent
         self.initValues()
-        self.initData()
+        self.initChart()
 
     def initValues(self):
-        self.XMAX = 4*4000   # x轴最大值
+        self.rate = 1000
+        self.XMAX = 4*self.rate   # x轴最大值
         self.xdata = np.array([])   # x轴数据
         self.ydata = np.array([])   # y轴数据
-        self.XDIS = 4*4000   # x轴显示范围
+        self.XDIS = 4*self.rate   # x轴显示范围
 
-    def initData(self):
+    def initChart(self):
         # 设置坐标轴标签
         self.setLabel('left', 'Amplitude(uV)')
         self.setLabel('bottom', 'Time(s)')
         # 设置坐标轴范围及刻度
         self.getPlotItem().getAxis('bottom').enableAutoSIPrefix(False)  # 不自动缩放单位(横轴：时间)
-        # self.getPlotItem().getAxis('bottom').setScale(1 / 4000)  # 单位放缩: 1s = 1 / 采样率
-        # self.getPlotItem().getAxis('bottom').setTickSpacing(1, 0.5) # 设置刻度间隔
+        self.getPlotItem().getAxis('bottom').setScale(1 / self.rate)  # 单位放缩: 1s = 1 / 采样率
+        self.getPlotItem().getAxis('bottom').setTickSpacing(1, 0.5) # 设置刻度间隔
         self.getPlotItem().getAxis('left').enableAutoSIPrefix(False)    # 不自动缩放单位(纵轴：幅值)
-        self.getPlotItem().getAxis('left').setScale(1) # / 1_000_000)  # 单位放缩: 1μV
+        # self.getPlotItem().getAxis('left').setScale(1) # / 1_000_000)  # 单位放缩: 1μV
         self.getPlotItem().getAxis('left').setStyle(autoReduceTextSpace=True)
         # 添加初始数据及设定范围和原点
         self.xdata = np.arange(0, self.XMAX, 1) # x轴数据
@@ -52,7 +53,14 @@ class MyPlotCanvas(pg.PlotWidget):
         self.curve = self.plot(self.xdata, self.ydata, pen='k')     # 曲线
         self.curve.setPos(0, 0) # 设置曲线的起始位置(0, 0)
     
+    def updateChart(self):
+        self.getPlotItem().getAxis('bottom').setScale(1 / self.rate)  # 单位放缩: 1s = 1 / 采样率
+        self.xdata = np.arange(0, self.XMAX, 1) # x轴数据
+        self.ydata = np.zeros(self.XMAX)    # y轴数据
+        self.curve.setData(self.xdata, self.ydata)     # 曲线
+    
     def zoomReset(self):    # 重置缩放
+        self.setYRange(-1000, 1000)
         self.enableAutoRange()
 
 
@@ -63,9 +71,9 @@ class MyCanvas(QFrame, Ui_myCanvas):
         super().__init__()
         self.mainWin = parent
         self.num = 0
-        self.initMyUI()
+        self.initUI()
 
-    def initMyUI(self):
+    def initUI(self):
         # 初始化UI
         self.setupUi(self)
         # 按键绑定
@@ -79,26 +87,20 @@ class MyCanvas(QFrame, Ui_myCanvas):
         self.canvas = MyPlotCanvas(self.mainWin)    # 画布
         self.canvasLayout.addWidget(self.canvas)  # 添加画布到布局中
         
-    
-    def updateYlim(self):   # 更新Y轴范围
-        ''' 更新Y轴范围'''
-        self.canvas.setRange(yRange=[-glo.YDIS, glo.YDIS])
-
-    def updateXlim(self):  # 更新X轴范围
-        ''' 更新X轴范围'''
-        self.canvas.XDIS = glo.XDIS
-        self.canvas.curve.setData(
-            self.canvas.xdata[-self.canvas.XDIS:], self.canvas.ydata[-self.canvas.XDIS:])
-    
     def updateData(self, data: typing.Any):
-        self.canvas.curve.setData(data)
-
-    def keyPressEvent(self, e) -> None: # 键盘事件
-        if e.key() == Qt.Key.Key_R: # 重置缩放
-            self.canvas.zoomReset()
+        self.canvas.curve.setData(data[-self.canvas.XDIS*self.canvas.rate:])
     
-    def closeEvent(self, event=None) -> None:   # 关闭事件
-        ...
+    def updateRate(self, rate: int=1000):
+        self.canvas.rate = rate
+        self.canvas.XMAX = 4*self.canvas.rate
+        self.canvas.XDIS = 4*self.canvas.rate
+        self.canvas.updateChart()
+    
+    def updateXdis(self, xdis: int=4):
+        self.canvas.XDIS = xdis
+    
+    def updateYdis(self, ydis: int=1000):
+        self.canvas.setYRange(-ydis, ydis)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

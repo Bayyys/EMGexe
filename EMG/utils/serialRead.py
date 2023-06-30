@@ -3,7 +3,6 @@ import serial.tools.list_ports
 from PyQt6.QtCore import QObject, QThread, pyqtSignal
 import numpy as np
 
-
 class serialRead(QThread):  # 读取串口数据线程(32通道)
     '''读取串口数据线程
     (读取串口数据, 并进行解码, 发送更新数据信号)
@@ -18,7 +17,7 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)
     serDisconnect = pyqtSignal()
     dataReadUpdate = pyqtSignal(list)
     dataUpdate = pyqtSignal(bytes)
-    dataDecodeUpdate = pyqtSignal(list)
+    serial_read_data_decode_update_signal = pyqtSignal(list)
     is_running = True
 
     def __init__(self, parent: QObject | None = ..., serial: serial.Serial | None=..., channel: int | str=32) -> None:
@@ -65,7 +64,7 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)
                         if self.ser.in_waiting:
                             data = self.ser.read(self.ser.in_waiting)
                             # self.dataUpdate.emit(self.fall)
-                            self.dataDecodeUpdate.emit(self.bytesSplit(data))
+                            self.serial_read_data_decode_update_signal.emit(self.bytesSplit(data))
                             # print(self.data_num)
                     else:   # 串口断开
                         print("serialRead stop")

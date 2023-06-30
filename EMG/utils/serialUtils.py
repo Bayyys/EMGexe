@@ -2,7 +2,7 @@ import serial
 import serial.tools.list_ports
 from time import sleep
 
-def serialOpen(com: str = "", bps: str = '4608000', timeout: str = '8') -> serial.Serial | None:    # 打开串口
+def serialOpen(com: str="", bps: str='4608000', timeout: str='8') -> serial.Serial | None:    # 打开串口
     """打开串口
 
     Attributes:
@@ -36,16 +36,14 @@ def serialClose(ser: serial.Serial | None = ...) -> bool:   # 关闭串口
     ----------------
         ser: 串口对象
     '''
-    if ser is None or not serialIsOpen(ser):
-        print("serialClose: 串口不存在或已关闭")
-        return False
+    if ser is None:
+        return True
     try:
         ser.reset_input_buffer()
         ser.reset_output_buffer()
         ser.close()
         return True
     except:
-        print("serialClose: 串口关闭失败")
         return False
 
 def serialIsOpen(ser: serial.Serial | None = ...) -> bool:  # 判断串口是否打开
