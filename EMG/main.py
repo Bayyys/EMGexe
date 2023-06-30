@@ -1,14 +1,18 @@
 import sys
 import os
+from PyQt6 import QtGui
 sys.path.append(os.getcwd()+"\\EMG")
 from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QWidgetAction, QMessageBox
+from PyQt6.QtGui import QCloseEvent
 from widget.main_mainWindow.mainWin import MyWindow
 from widget.canvas_frame.drawFrame import drawFrame
 from widget.serial_dialog.serialDialog import serialDialog
+from widget.fft_widget.fftWidget import fftWidget
 # utils
 from utils.getCom import getCom
 from utils.serialRead import serialRead
 from utils.dataProcess import dataProcess
+from utils.fftProcess import fftProcess
 from utils.dataSave import dataSave
 import utils.serialUtils as serialUtils
 
@@ -20,6 +24,8 @@ class mainWin(MyWindow):
         super().initUI()
         self.drawFrame = drawFrame()
         self.chart_frame.layout().addWidget(self.drawFrame)
+        self.fftWidget = fftWidget()
+        self.layout_fft.layout().addWidget(self.fftWidget)
         self.cb_channel.currentTextChanged.connect(self.cb_channel_currentTextChanged)
         self.cb_rate.currentIndexChanged.connect(self.cb_rate_currentIndexChanged)
         self.cb_xdis.currentIndexChanged.connect(self.cb_xdis_currentIndexChanged)
@@ -90,14 +96,18 @@ class mainWin(MyWindow):
         serialUtils.serialWrite(self.ser, state='start', connect='usb', sample_rate=self.cb_rate.currentText(), channel=self.cb_channel.currentText())
         self.serial_read_thread = serialRead(self, self.ser, self.cb_channel.currentText())
         self.data_process_thread = dataProcess(self, self.cb_channel.currentText(), self.cb_rate.currentText(), True if self.btn_filter.text() == "滤波器-ON" else False, self.filterWidget.getParameters())
+        self.fft_process_thread = fftProcess(self, self.cb_channel.currentText(), self.cb_rate.currentText())
         self.data_save_thread = dataSave(self, self.et_filePath.text(), self.cb_channel.currentText())
         self.serial_read_thread.serial_read_data_decode_update_signal.connect(self.data_process_thread.put_data)
         self.serial_read_thread.serial_read_data_decode_update_signal.connect(self.data_save_thread.put_data)
         self.data_process_thread.data_process_signal.connect(self.drawFrame.updateData)
+        self.data_process_thread.data_process_signal.connect(self.fft_process_thread.put_data)
+        self.fft_process_thread.fft_process_signal.connect(self.fftWidget.updateChart)
         self.data_save_thread.data_save_signal.connect(self.data_save_signal_slot)
         self.filterWidget.filter_update_signal.connect(self.data_process_thread.updateFilterParam)
         self.serial_read_thread.start()
         self.data_process_thread.start()
+        self.fft_process_thread.start()
         self.data_save_thread.start()
         self.btn_start_success()
 
@@ -105,6 +115,7 @@ class mainWin(MyWindow):
         serialUtils.serialWrite(self.ser, state='stop')
         self.serial_read_thread.del_thread()
         self.data_process_thread.del_thread()
+        self.fft_process_thread.del_thread()
         self.data_save_thread.del_thread()
         self.btn_stop_success()
 
@@ -114,6 +125,13 @@ class mainWin(MyWindow):
             self.data_process_thread.isFilter = True if self.btn_filter.text() == "滤波器-ON" else False
         except:
             ...
+
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        try:
+            self.btn_disconnect_clicked()
+        except:
+            ...
+        return super().closeEvent(a0)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)    # 创建应用程序

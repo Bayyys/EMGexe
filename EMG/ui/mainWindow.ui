@@ -657,7 +657,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="frameEditText">
+            <widget class="QGroupBox" name="layout_fft">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
@@ -686,22 +686,6 @@
               <property name="bottomMargin">
                <number>3</number>
               </property>
-              <item>
-               <layout class="QVBoxLayout" name="layout_FFT">
-                <property name="leftMargin">
-                 <number>3</number>
-                </property>
-                <property name="topMargin">
-                 <number>3</number>
-                </property>
-                <property name="rightMargin">
-                 <number>3</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>3</number>
-                </property>
-               </layout>
-              </item>
              </layout>
             </widget>
            </item>

@@ -9,20 +9,10 @@ from PyQt6.QtWidgets import QFrame, QApplication
 # ui
 from ui.canvas_ui.myCanvas_ui.my_canvas import Ui_myCanvas
 # utils
-import utils.globalParams as glo
 import pyqtgraph as pg
 
 class MyPlotCanvas(pg.PlotWidget):
-    '''绘图 canvas
-    
-    Attributes:
-    ----------------
-        mainWin: 主窗口
-        XMAX: x轴最大值
-        xdata: x轴数据
-        ydata: y轴数据
-        XDIS: x轴显示范围
-    '''
+    '''绘图 canvas'''
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent

@@ -15,6 +15,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     
     def initUI(self):
         self.setupUi(self)  # 初始化UI
+        # 窗口关闭按钮重定向
+        
         # QComboBox
         self.cb_channel.clear() # 通道数
         self.cb_channel.addItems(["2", "32"])
@@ -45,6 +47,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.file_name = "" # 文件名
         self.serial_read_thread = None
         self.data_process_thread = None
+        self.fft_process_thread = None
         self.data_save_thread = None
 
     def btn_filePath_clicked(self):
@@ -152,6 +155,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.file_save_dialog(self.file_name)
         self.serial_read_thread = None
         self.data_process_thread = None
+        self.fft_process_thread = None
         self.data_save_thread = None
 
 if __name__ == '__main__':
