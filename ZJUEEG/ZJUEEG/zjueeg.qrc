@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/zju.png</file>
+        <file>media/Glazer2.wav</file>
+    </qresource>
+</RCC>

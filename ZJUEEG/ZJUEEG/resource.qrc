@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Glazer.mp3</file>
+    </qresource>
+</RCC>
