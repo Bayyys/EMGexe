@@ -7,9 +7,6 @@ from PyQt6 import QtWidgets, QtCore, QtGui
 from PyQt6 import uic
 # ui
 from ui.serial_ui.serial import Ui_serialDialog
-# utils
-import utils.globalParams as glo
-
 
 class serialDialog(QtWidgets.QDialog, Ui_serialDialog):
     def __init__(self) -> None:
@@ -26,7 +23,6 @@ class serialDialog(QtWidgets.QDialog, Ui_serialDialog):
         # 设置窗口属性
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_QuitOnClose, False)  # 使得关闭窗口时不退出程序
 
-    
     def portListUpdate(self):
         port_list = list(serial.tools.list_ports.comports())
         self.box_port.addItems([port_list[i][0] + ' ' + port_list[i][1]
@@ -54,7 +50,6 @@ class serialDialog(QtWidgets.QDialog, Ui_serialDialog):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    glo.__init__()
     win = serialDialog()
     win.show()
     sys.exit(app.exec())

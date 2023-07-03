@@ -104,7 +104,7 @@ class dataProcess(QThread):
         while self.is_running:
             if self.process():
                 self.data_process_signal.emit(self.data_processd_lsit)
-            QThread.msleep(10)
+            QThread.msleep(50)
             
 if __name__ == '__main__':
     d = dataProcess(None, 32)

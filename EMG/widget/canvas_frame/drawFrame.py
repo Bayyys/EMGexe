@@ -21,13 +21,14 @@ class drawFrame(QFrame, Ui_drawFrame):
         self.setWindowTitle("drawFrame")
     
     def initValues(self):
-        self.chartList = []
+        self.chartList: list[drawSingleCanvas] = [] # 图表列表
         self.chartNum = 32
     
     def initChart(self, chartNum: int=32):
         for i in range(chartNum):
             chart = drawSingleCanvas()
             chart.lb_num.setText(f"CH {i+1}")
+            # chart.canvas.curve.setPen(color=(i, self.chartNum+1.3))
             self.chartList.append(chart)
             self.layout_chart.addWidget(chart)
 
@@ -58,6 +59,21 @@ class drawFrame(QFrame, Ui_drawFrame):
     def resetChart(self):
         for i in range(self.chartNum):
             self.chartList[i].canvas.zoomReset()
+            self.chartList[i].resizeEvent(None)
+
+    def changeMode(self, fft: bool=True):
+        if fft:
+            for i in range(self.chartNum):
+                self.chartList[i].canvas.curve.setFftMode(fft)
+                self.chartList[i].canvas.getPlotItem().getAxis('bottom').setScale(self.chartList[i].canvas.rate)  # 单位放缩: 1s = 1 / 采样率
+                self.chartList[i].canvas.setLabel('left', 'Amplitute/a.u.')
+                self.chartList[i].canvas.setLabel('bottom', 'Frequence/Hz')
+        else:
+            for i in range(self.chartNum):
+                self.chartList[i].canvas.curve.setFftMode(fft)
+                self.chartList[i].canvas.getPlotItem().getAxis('bottom').setScale(1 / self.chartList[i].canvas.rate)  # 单位放缩: 1s = 1 / 采样率
+                self.chartList[i].canvas.setLabel('left', 'Amplitude(uV)')
+                self.chartList[i].canvas.setLabel('bottom', 'Time(s)')
 
     def resizeEvent(self, a0: QWidget.resizeEvent) -> None:
         self.scrollContent.setMinimumHeight(int(self.scrollArea.height()/4)*self.chartNum)

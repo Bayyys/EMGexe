@@ -25,8 +25,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.cb_rate.addItems(["250", "500", "1000", "2000", "4000", "8000", "16000"])
         self.cb_rate.setCurrentText("1000")
         self.cb_xdis.clear() # 时基s
-        self.cb_xdis.addItems(["1", "2", "3", "4"])
-        self.cb_xdis.setCurrentText("4")
+        self.cb_xdis.addItems(["1", "2", "3", "4", "5"])
+        self.cb_xdis.setCurrentText("5")
         self.cb_ydis.clear() # 幅值uV
         self.cb_ydis.addItems(["20", "50", "100", "200", "500", "1000", "2000", "5000", "10000"])
         self.cb_ydis.setCurrentText("1000")
@@ -47,6 +47,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.file_name = "" # 文件名
         self.serial_read_thread = None
         self.data_process_thread = None
+        self.data_update_thread = None
         self.fft_process_thread = None
         self.data_save_thread = None
 

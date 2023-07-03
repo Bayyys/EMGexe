@@ -2,7 +2,7 @@ import sys
 import os
 from PyQt6 import QtGui
 sys.path.append(os.getcwd()+"\\EMG")
-from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QWidgetAction, QMessageBox
+from PyQt6.QtWidgets import QApplication
 from PyQt6.QtGui import QCloseEvent
 from widget.main_mainWindow.mainWin import MyWindow
 from widget.canvas_frame.drawFrame import drawFrame
@@ -12,6 +12,7 @@ from widget.fft_widget.fftWidget import fftWidget
 from utils.getCom import getCom
 from utils.serialRead import serialRead
 from utils.dataProcess import dataProcess
+from utils.drawFrameUpdate import dataUpdate
 from utils.fftProcess import fftProcess
 from utils.dataSave import dataSave
 import utils.serialUtils as serialUtils
@@ -24,6 +25,7 @@ class mainWin(MyWindow):
         super().initUI()
         self.drawFrame = drawFrame()
         self.chart_frame.layout().addWidget(self.drawFrame)
+        self.drawFrame.changeMode(False)
         self.fftWidget = fftWidget()
         self.layout_fft.layout().addWidget(self.fftWidget)
         self.cb_channel.currentTextChanged.connect(self.cb_channel_currentTextChanged)
@@ -33,21 +35,38 @@ class mainWin(MyWindow):
         self.btn_reset.clicked.connect(self.drawFrame.resetChart)
         self.btn_connect.clicked.connect(self.btn_connect_choose)
         self.btn_start.clicked.connect(self.btn_start_choose)
+        self.btn_mode.clicked.connect(self.btn_mode_clicked)
+        self.sb_fft_x.valueChanged.connect(self.cb_fft_currentIndexChanged)
     
+    def cb_fft_currentIndexChanged(self):
+        self.fftWidget.cb_fft_y_currentIndexChanged(int(self.sb_fft_x.value()))
+
     def initValues(self):
         super().initValues()
 
     def cb_channel_currentTextChanged(self):
         self.drawFrame.updateChart(int(self.cb_channel.currentText()))
+        self.fftWidget.updateChart(int(self.cb_channel.currentText()))
     
     def cb_rate_currentIndexChanged(self):
         self.drawFrame.updateRate(int(self.cb_rate.currentText()))
+        self.fftWidget.updateRate(int(self.cb_rate.currentText()))
     
     def cb_xdis_currentIndexChanged(self):
         self.drawFrame.updateXdis(int(self.cb_xdis.currentText()))
 
     def cb_ydis_currentIndexChanged(self):
         self.drawFrame.updateYdis(int(self.cb_ydis.currentText()))
+    
+    def btn_mode_clicked(self):
+        if self.btn_mode.text() == "模式: 时域信号":
+            self.btn_mode.setText("模式: 频域分析")
+            self.drawFrame.changeMode(True)
+            ...
+        elif self.btn_mode.text() == "模式: 频域分析":
+            self.btn_mode.setText("模式: 时域信号")
+            self.drawFrame.changeMode(False)
+            ...
     
     def btn_connect_choose(self):
         if self.btn_connect.text() == "连接":
@@ -96,18 +115,21 @@ class mainWin(MyWindow):
         serialUtils.serialWrite(self.ser, state='start', connect='usb', sample_rate=self.cb_rate.currentText(), channel=self.cb_channel.currentText())
         self.serial_read_thread = serialRead(self, self.ser, self.cb_channel.currentText())
         self.data_process_thread = dataProcess(self, self.cb_channel.currentText(), self.cb_rate.currentText(), True if self.btn_filter.text() == "滤波器-ON" else False, self.filterWidget.getParameters())
-        self.fft_process_thread = fftProcess(self, self.cb_channel.currentText(), self.cb_rate.currentText())
+        self.data_update_thread = dataUpdate(self, self.drawFrame, self.fftWidget)
+        # self.fft_process_thread = fftProcess(self, self.cb_channel.currentText(), self.cb_rate.currentText())
         self.data_save_thread = dataSave(self, self.et_filePath.text(), self.cb_channel.currentText())
         self.serial_read_thread.serial_read_data_decode_update_signal.connect(self.data_process_thread.put_data)
         self.serial_read_thread.serial_read_data_decode_update_signal.connect(self.data_save_thread.put_data)
+        # self.data_process_thread.data_process_signal.connect(self.data_update_thread.put_data)
+        self.data_process_thread.data_process_signal.connect(self.fftWidget.update_chart)
         self.data_process_thread.data_process_signal.connect(self.drawFrame.updateData)
-        self.data_process_thread.data_process_signal.connect(self.fft_process_thread.put_data)
-        self.fft_process_thread.fft_process_signal.connect(self.fftWidget.updateChart)
+        # self.fft_process_thread.fft_process_signal.connect(self.fftWidget.updateChart)
         self.data_save_thread.data_save_signal.connect(self.data_save_signal_slot)
         self.filterWidget.filter_update_signal.connect(self.data_process_thread.updateFilterParam)
         self.serial_read_thread.start()
         self.data_process_thread.start()
-        self.fft_process_thread.start()
+        self.data_update_thread.start()
+        # self.fft_process_thread.start()
         self.data_save_thread.start()
         self.btn_start_success()
 
@@ -115,7 +137,8 @@ class mainWin(MyWindow):
         serialUtils.serialWrite(self.ser, state='stop')
         self.serial_read_thread.del_thread()
         self.data_process_thread.del_thread()
-        self.fft_process_thread.del_thread()
+        self.data_update_thread.del_thread()
+        # self.fft_process_thread.del_thread()
         self.data_save_thread.del_thread()
         self.btn_stop_success()
 

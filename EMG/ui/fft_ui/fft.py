@@ -4,7 +4,6 @@ sys.path.append(os.getcwd()+"\\EMG")
 from scipy.signal import sosfilt, detrend
 from PyQt5.QtWidgets import QApplication
 # utils
-import utils.globalParams as glo
 import pyqtgraph as pg
 
 class FFTCanvas(pg.PlotWidget):
@@ -24,7 +23,6 @@ class FFTCanvas(pg.PlotWidget):
         self.curve2.setData(xdata[1], ydata[1])
 
 if __name__ == '__main__':    
-    glo.__init__()
     pg.setConfigOption('background', 'w')
     pg.setConfigOption('foreground', 'k') 
     pg.setConfigOption('leftButtonPan', False)
