@@ -10,7 +10,7 @@ import scipy.signal as signal
 from widget.canvas_frame.drawFrame import drawFrame
 from widget.fft_widget.fftWidget import fftWidget
 
-class dataUpdate(QThread):
+class dataFrameUpdate(QThread):
     """数据处理线程"""
 
     def __init__(self, parent: QObject | None = ..., drawFrame:drawFrame=None, fftWidget:fftWidget=None) -> None:
@@ -44,7 +44,7 @@ class dataUpdate(QThread):
             QThread.msleep(10)
             
 if __name__ == '__main__':
-    d = dataUpdate(None, 32)
+    d = dataFrameUpdate(None, 32)
     time_start = time.time()
     for i in range(10000):
         d.put_data()

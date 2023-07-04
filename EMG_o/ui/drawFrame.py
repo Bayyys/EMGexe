@@ -16,12 +16,12 @@ import pyqtgraph as pg
 from pyqtgraph import GraphicsWidget, AxisItem
 
 class FFTThread(QThread):
-    '''FFT线程
+    """FFT线程
     
     signal:
     ----------------
         fftSignal: 频谱图信号
-    '''
+    """
     fftSignal = pyqtSignal(np.ndarray, np.ndarray)
 
     def __init__(self, mainWin):
@@ -73,7 +73,7 @@ class FFTThread(QThread):
             time.sleep(0.05)
 
 class FFTCanvas(pg.PlotWidget):
-    '''FFT 绘图 canvas'''
+    """FFT 绘图 canvas"""
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
@@ -90,7 +90,7 @@ class FFTCanvas(pg.PlotWidget):
         self.curve2.setData(xdata[1], ydata[1])
 
 class MyPlotCanvas(pg.PlotWidget):
-    '''绘图 canvas
+    """绘图 canvas
     
     Attributes:
     ----------------
@@ -99,7 +99,7 @@ class MyPlotCanvas(pg.PlotWidget):
         xdata: x轴数据
         ydata: y轴数据
         XDIS: x轴显示范围
-    '''
+    """
     
 
     def __init__(self, parent=None):
@@ -129,7 +129,7 @@ class MyPlotCanvas(pg.PlotWidget):
         self.enableAutoRange()
 
 class drawTabFrame(QFrame, Ui_canvasTab):
-    '''标记数据段绘图
+    """标记数据段绘图
     
     Attributes:
     ----------------
@@ -141,7 +141,7 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         arrayLen: 用于存储tab数据的长度(实时)
         tabDataList: 用于存储tab数据的列表(二维 arrayLen * sample_rate)
         data_tab_point: # 存储标记数据段的坐标点(结束记录后存储)
-    '''
+    """
 
     def __init__(self, parent=None):
         super().__init__()
@@ -182,13 +182,13 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         self.sb_page.editingFinished.connect(self.sb_page_editingFinished)  # 显示当前页码范围 
 
     def canvasTabDraw(self, fromNum:int, toNum:int):    # 画布Tab绘图
-        '''画布Tab绘图
+        """画布Tab绘图
 
         Attributes:
         ----------------
             fromNum: 绘图起始位置
             toNum: 绘图结束位置
-        '''
+        """
         size = toNum - fromNum + 1
         for i in range(size):
             self.tabCanvasList[i].getPlotItem().clearPlots()  # 清空画布Tab
@@ -257,12 +257,12 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         ...
 
 class drawFrameFile(QFrame, Ui_Form):    #, Ui_Form):
-    '''文件绘图窗口
+    """文件绘图窗口
     
     Attributes:
     ----------------
         history: 历史数据
-    '''
+    """
 
     def __init__(self, parent=None):
         super().__init__()
@@ -324,15 +324,15 @@ class drawFrameFile(QFrame, Ui_Form):    #, Ui_Form):
         self.canvas.curve.setData(self.canvas.xdata, data_process)
     
     def updateYlim(self):   # 更新Y轴范围
-        '''更新Y轴范围'''
+        """更新Y轴范围"""
         self.canvas.setYRange(-glo.YDIS, glo.YDIS)
 
     def updateXlim(self):  # 更新X轴范围
-        '''更新X轴范围'''
+        """更新X轴范围"""
         ...
 
     def updateSampleRate(self): # 更新采样率
-        '''更新采样率'''
+        """更新采样率"""
         self.canvas.getPlotItem().getAxis('bottom').setScale(1 / glo.sample_rate)  # 单位放缩: 1s = 1 / 采样率
 
     def keyPressEvent(self, e) -> None:  # 键盘事件
@@ -345,7 +345,7 @@ class drawFrameFile(QFrame, Ui_Form):    #, Ui_Form):
         ...
 
 class drawFrame(QFrame, Ui_Form):
-    '''实时绘图窗口
+    """实时绘图窗口
     
     Attributes:
     ----------------
@@ -357,7 +357,7 @@ class drawFrame(QFrame, Ui_Form):
         data_tab_mutex: 标记数据段互斥锁
         tab_flag: 标记数据段标志
         test_flag: 标记数据段测试标志
-    '''
+    """
 
     def __init__(self, parent=None):
         super().__init__()
@@ -423,7 +423,7 @@ class drawFrame(QFrame, Ui_Form):
             self.canvas.getPlotItem().getAxis('bottom').showLabel(False)  # 隐藏下方坐标轴
 
     def processData(self):  # 处理数据 --> 定时器50ms调用一次
-        ''' 处理数据 --> 定时器50ms调用一次'''
+        """ 处理数据 --> 定时器50ms调用一次"""
 
         # 待处理数据获取(互斥锁)
         self.data_add_mutex.lock()
@@ -494,18 +494,18 @@ class drawFrame(QFrame, Ui_Form):
         ...
     
     def addData(self, data):    # 向待处理数据中添加测取数据
-        ''' 向待处理数据中添加测取数据'''
+        """ 向待处理数据中添加测取数据"""
         # 待处理数据添加(互斥锁)
         self.data_add_mutex.lock()
         self.data_add = np.append(self.data_add, data)
         self.data_add_mutex.unlock()
 
     def updateYlim(self):   # 更新Y轴范围
-        ''' 更新Y轴范围'''
+        """ 更新Y轴范围"""
         self.canvas.setRange(yRange=[-glo.YDIS, glo.YDIS])
 
     def updateXlim(self):  # 更新X轴范围
-        ''' 更新X轴范围'''
+        """ 更新X轴范围"""
         self.canvas.XDIS = glo.XDIS
         self.canvas.curve.setData(
             self.canvas.xdata[-self.canvas.XDIS:], self.canvas.ydata[-self.canvas.XDIS:])

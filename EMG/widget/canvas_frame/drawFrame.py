@@ -10,6 +10,9 @@ from ui.canvas_ui.draw_frame_ui import Ui_drawFrame
 from widget.canvas_frame.drawSingleFrame.drawSingleFrame import drawSingleCanvas
 
 class drawFrame(QFrame, Ui_drawFrame):
+    """
+    图像显示界面
+    """
     def __init__(self) -> None:
         super().__init__()
         self.initUI()
@@ -61,7 +64,7 @@ class drawFrame(QFrame, Ui_drawFrame):
             self.chartList[i].canvas.zoomReset()
             self.chartList[i].resizeEvent(None)
 
-    def changeMode(self, fft: bool=True):
+    def fftChangeMode(self, fft: bool=True):
         if fft:
             for i in range(self.chartNum):
                 self.chartList[i].canvas.curve.setFftMode(fft)

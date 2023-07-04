@@ -13,7 +13,7 @@ from ui.canvas_ui.canvasTab_ui.canvasTab import Ui_canvasTab
 from widget.canvas_frame.myCanvas.MyCanvas import MyCanvas
 
 class drawTabFrame(QFrame, Ui_canvasTab):
-    '''标记数据段绘图
+    """标记数据段绘图
     
     Attributes:
     ----------------
@@ -25,7 +25,7 @@ class drawTabFrame(QFrame, Ui_canvasTab):
         arrayLen: 用于存储tab数据的长度(实时)
         tabDataList: 用于存储tab数据的列表(二维 arrayLen * sample_rate)
         data_tab_point: # 存储标记数据段的坐标点(结束记录后存储)
-    '''
+    """
 
     def __init__(self, parent=None):
         super().__init__()
@@ -66,13 +66,13 @@ class drawTabFrame(QFrame, Ui_canvasTab):
             self.tabCanvasList.append(tabCanvas)
 
     def canvasTabDraw(self, fromNum:int, toNum:int):    # 画布Tab绘图
-        '''画布Tab绘图
+        """画布Tab绘图
 
         Attributes:
         ----------------
             fromNum: 绘图起始位置
             toNum: 绘图结束位置
-        '''
+        """
         size = toNum - fromNum + 1
         for i in range(size):
             self.tabCanvasList[i].getPlotItem().clearPlots()  # 清空画布Tab

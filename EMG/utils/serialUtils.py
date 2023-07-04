@@ -30,12 +30,12 @@ def serialOpen(com: str="", bps: str='4608000', timeout: str='8') -> serial.Seri
         ...
 
 def serialClose(ser: serial.Serial | None = ...) -> bool:   # 关闭串口
-    '''关闭串口
+    """关闭串口
     
     Attribute:
     ----------------
         ser: 串口对象
-    '''
+    """
     if ser is None:
         return True
     try:
@@ -46,8 +46,8 @@ def serialClose(ser: serial.Serial | None = ...) -> bool:   # 关闭串口
     except:
         return False
 
-def serialIsOpen(ser: serial.Serial | None = ...) -> bool:  # 判断串口是否打开
-    ''' 判断串口是否打开
+def serialIsOpen(ser: serial.Serial | None = ...) -> bool:
+    """ 判断串口是否打开
     
     Attribute:
     ----------------
@@ -56,7 +56,7 @@ def serialIsOpen(ser: serial.Serial | None = ...) -> bool:  # 判断串口是否
     Return:
     ----------------
         True/False: 是否打开
-    '''
+    """
     try:
         if ser is not None and ser.is_open == True:
             return True
@@ -65,8 +65,8 @@ def serialIsOpen(ser: serial.Serial | None = ...) -> bool:  # 判断串口是否
     except:
         return False
 
-def serialWrite(ser: serial.Serial | None= ..., state: str='start', connect: str='usb', sample_rate: int | str=1000, channel: int | str=32):
-    '''发送命令
+def serialWrite(ser: serial.Serial | None= ..., state: str='start', connect: str='usb', sample_rate: int | str=1000, channel: int | str=32) -> None:
+    """发送命令
 
     Attributes:
     ----------
@@ -74,7 +74,7 @@ def serialWrite(ser: serial.Serial | None= ..., state: str='start', connect: str
         connect: usb/wifi
         sample_rate: 250/500/1000/2000/4000/8000/16000
         channel: 32/2
-    '''
+    """
     if ser is None or not serialIsOpen(ser):
         print("serialWrite: 串口不存在或已关闭")
     else:

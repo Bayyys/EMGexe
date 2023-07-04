@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication
 import pyqtgraph as pg
 
 class FFTCanvas(pg.PlotWidget):
-    '''FFT 绘图 canvas'''
+    """FFT 绘图 canvas"""
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent

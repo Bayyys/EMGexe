@@ -1,5 +1,7 @@
+# 弃用
 import sys
-sys.path.append('..')
+import os
+sys.path.append(os.getcwd()+"\\EMG")
 from utils import decodeUtil
 from time import sleep
 import pandas as pd

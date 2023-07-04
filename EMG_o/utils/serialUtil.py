@@ -7,13 +7,13 @@ import utils.decodeUtil as decodeUtil
 import time
 
 class getCom(QThread):  # 获取串口号线程
-    '''获取串口号线程
+    """获取串口号线程
 
     Signal:
     ----------------
         comUpdate: 串口号更新信号(检测串口的变化, 发生变化传递更新串口号列表)
             emit: port_list_orignal: 串口号列表
-    '''
+    """
     comUpdate = pyqtSignal(list)
 
     def __init__(self):
@@ -37,7 +37,7 @@ class getCom(QThread):  # 获取串口号线程
         self.port_list_orignal = port_list
 
 class serialRead2(QThread):  # 读取串口数据线程(两通道)
-    '''读取串口数据线程
+    """读取串口数据线程
     (读取串口数据, 并进行解码, 发送更新数据信号)
 
     Signal:
@@ -46,7 +46,7 @@ class serialRead2(QThread):  # 读取串口数据线程(两通道)
             emit: None
         serDisconnect: 串口断开信号
             emit: num_list: 读取到的数据列表
-    '''
+    """
     serDisconnect = pyqtSignal()
     dateReadUpdate = pyqtSignal(list)
     rest = b''
@@ -71,7 +71,7 @@ class serialRead2(QThread):  # 读取串口数据线程(两通道)
                 self.dateReadUpdate.emit(self.bytesSplit(data))
 
     def bytesSplit(self, data):
-        '''解码数据
+        """解码数据
         
         Attribute:
         ----------------
@@ -80,7 +80,7 @@ class serialRead2(QThread):  # 读取串口数据线程(两通道)
         Return:
         ----------------
             num_list: 解码后的数据列表
-        '''
+        """
         num_list = [[], []]
         if len(self.rest) > 0:
             data = self.rest + data
@@ -107,7 +107,7 @@ class serialRead2(QThread):  # 读取串口数据线程(两通道)
         return num_list
     
     def bytestoFloat(self, data):
-        '''将字节转换为浮点数
+        """将字节转换为浮点数
         
         Attribute:
         ----------------
@@ -116,7 +116,7 @@ class serialRead2(QThread):  # 读取串口数据线程(两通道)
         Return: 
         ----------------
             data: 转换后的数据
-        '''
+        """
         start_index = 0
         try:
             if data[3] > 128:
@@ -134,7 +134,7 @@ class serialRead2(QThread):  # 读取串口数据线程(两通道)
             return 0
 
 class serialRead(QThread):  # 读取串口数据线程(32通道)  # TODO: 根据通道数自动分配读取线程
-    '''读取串口数据线程
+    """读取串口数据线程
     (读取串口数据, 并进行解码, 发送更新数据信号)
     
     Signal:
@@ -143,7 +143,7 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)  # TODO: 根据
             emit: None
         serDisconnect: 串口断开信号
             emit: num_list: 读取到的数据列表
-    '''
+    """
     serDisconnect = pyqtSignal()
     dateReadUpdate = pyqtSignal(list)
     rest = b''
@@ -171,7 +171,7 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)  # TODO: 根据
                 self.dateReadUpdate.emit(self.bytesSplit(data))
 
     def bytesSplit(self, data):
-        '''解码数据
+        """解码数据
         
         Attribute:
         ----------------
@@ -180,7 +180,7 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)  # TODO: 根据
         Return:
         ----------------
             num_list: 解码后的数据列表
-        '''
+        """
         num_list = [[], []]
         if len(self.rest) > 0:
             data = self.rest + data
@@ -212,7 +212,7 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)  # TODO: 根据
         return num_list
     
     def bytestoFloat(self, data):
-        '''将字节转换为浮点数
+        """将字节转换为浮点数
         
         Attribute:
         ----------------
@@ -221,7 +221,7 @@ class serialRead(QThread):  # 读取串口数据线程(32通道)  # TODO: 根据
         Return: 
         ----------------
             data: 转换后的数据
-        '''
+        """
         start_index = 0
         try:
             if data[3] > 128:
@@ -266,7 +266,7 @@ def serialOpen(com, bps, timex):    # 打开串口
         ...
 
 def serialIsOpen(ser) -> bool:  # 判断串口是否打开
-    ''' 判断串口是否打开
+    """ 判断串口是否打开
     
     Attribute:
     ----------------
@@ -275,7 +275,7 @@ def serialIsOpen(ser) -> bool:  # 判断串口是否打开
     Return:
     ----------------
         True/False: 是否打开
-    '''
+    """
     try:
         count = ser.inWaiting()
         return True
@@ -283,12 +283,12 @@ def serialIsOpen(ser) -> bool:  # 判断串口是否打开
         return False
 
 def serialClose(ser):   # 关闭串口
-    '''关闭串口
+    """关闭串口
     
     Attribute:
     ----------------
         ser: 串口对象
-    '''
+    """
     try:
         glo.set_connected(False)
         glo.ser.close()

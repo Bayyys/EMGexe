@@ -1,3 +1,4 @@
+# 弃用
 import sys
 import os
 import typing

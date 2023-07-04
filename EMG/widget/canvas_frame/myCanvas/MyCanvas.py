@@ -12,7 +12,7 @@ from ui.canvas_ui.myCanvas_ui.my_canvas import Ui_myCanvas
 import pyqtgraph as pg
 
 class MyPlotCanvas(pg.PlotWidget):
-    '''绘图 canvas'''
+    """绘图 canvas"""
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
