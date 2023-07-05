@@ -11,6 +11,7 @@ import pyqtgraph as pg
 
 
 class fftPlot(pg.PlotWidget):
+    """fft图像显示 Canvas"""
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
@@ -36,6 +37,7 @@ class fftPlot(pg.PlotWidget):
         self.setMouseEnabled(x=True, y=False)   # 禁止y轴缩放
 
 class fftWidget(QWidget):
+    """fft图像显示界面"""
     def __init__(self, parent=None):
         super().__init__()
         self.mainWin = parent
@@ -54,22 +56,43 @@ class fftWidget(QWidget):
         self.setContentsMargins(0, 0, 0, 0)
 
     def initChart(self):
+        """初始化fft图表"""
         for i in range(self.chartNum):
-            # fft曲线
             curve = self.chart.plotItem.plot(self.chart.ydata, pen=pg.mkPen(color=(i, self.chartNum*1.3)), width=1, name="Channel"+str(i))
             curve.setFftMode(True)
             self.chart.curve_list.append(curve)
 
     def updateRate(self, rate: str|int = 1000):
+        """
+        更新采样率
+
+        Attributes:
+        -----------
+            rate: str|int
+        """
         self.rate = int(rate)
         self.chart.getPlotItem().getAxis('bottom').setScale(self.rate)
     
-    def updateChart(self, para_list:list=[]):   # Wait
-        amp_list, fre_list = para_list
-        for i in range(len(amp_list)):
-            self.chart.curve_list[i].setData(fre_list[i], amp_list[i])
+    def updateChart(self, chartNum: int=32):
+        """
+        更新图表
+        
+        根据通道数更新图表
 
-    def update_chart(self, data_lsit:list=[]):
+        Attributes:
+        -----------
+            chartNum: 图表数量
+        """
+        self.chartNum = chartNum
+        for i in range(self.chartNum):
+            self.chart.curve_list[i].setData(self.chart.ydata)
+            self.chart.curve_list[i].setPen(pg.mkPen(color=(i, self.chartNum*1.3)))
+            self.chart.curve_list[i].setFftMode(True)
+        for i in range(self.chartNum, len(self.chart.curve_list)):
+            self.chart.getPlotItem().removeItem(self.chart.curve_list[i])
+
+
+    def updateData(self, data_lsit:list=[]):
         for i in range(len(data_lsit)):
             self.chart.curve_list[i].setData(data_lsit[i][-self.rate*2:])
 

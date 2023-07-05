@@ -70,6 +70,7 @@ def serialWrite(ser: serial.Serial | None= ..., state: str='start', connect: str
 
     Attributes:
     ----------
+        ser: 串口对象
         state: start/stop
         connect: usb/wifi
         sample_rate: 250/500/1000/2000/4000/8000/16000

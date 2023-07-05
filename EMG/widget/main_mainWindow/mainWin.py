@@ -9,8 +9,6 @@ from ui.mainWindow import Ui_MainWindow # 主界面
 from widget.filter_frame.filterFrame import filterFrame # 滤波器设置控件
 from utils.serialRead import serialRead # 串口读取线程
 from utils.dataProcess import dataProcess # 数据处理线程
-from utils.drawFrameUpdate import dataFrameUpdate # 图像显示界面更新线程
-from utils.fftProcess import fftProcess # fft处理线程
 from utils.dataSave import dataSave # 数据保存线程
 
 class MyWindow(QMainWindow, Ui_MainWindow):

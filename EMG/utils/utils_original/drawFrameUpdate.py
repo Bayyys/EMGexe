@@ -33,7 +33,7 @@ class dataFrameUpdate(QThread):
         data_list = self.data_list
         if data_list:
             self.drawFrame.updateData(data_list)
-            self.fftWidget.update_chart(data_list)
+            self.fftWidget.updateData(data_list)
 
     def del_thread(self) -> None:
         self.is_running = False

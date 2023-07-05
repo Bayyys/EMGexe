@@ -28,6 +28,11 @@ class drawFrame(QFrame, Ui_drawFrame):
         self.chartNum = 32
     
     def initChart(self, chartNum: int=32):
+        """
+        初始化图表
+        
+        最初创建32通道图表数据
+        """
         for i in range(chartNum):
             chart = drawSingleCanvas()
             chart.lb_num.setText(f"CH {i+1}")
@@ -35,8 +40,17 @@ class drawFrame(QFrame, Ui_drawFrame):
             self.chartList.append(chart)
             self.layout_chart.addWidget(chart)
 
-    def updateChart(self, charNum: int=32):
-        self.chartNum = charNum
+    def updateChart(self, chartNum: int=32):
+        """
+        更新图表
+
+        根据通道数更新图表显示数量
+
+        Attribute:
+        ----------
+            charNum: 通道数
+        """
+        self.chartNum = chartNum
         for i in range(self.chartNum):
             self.chartList[i].show()
         for i in range(self.chartNum, 32):
@@ -44,22 +58,55 @@ class drawFrame(QFrame, Ui_drawFrame):
         self.resizeEvent(None)
     
     def updateData(self, data: list):
+        """
+        更新数据
+        
+        Attribute:
+        ----------
+            data: 数据
+        """
         for i in range(self.chartNum):
             self.chartList[i].updateData(data[i])
 
     def updateRate(self, rate: str|int = 1000):
+        """
+        更新采样率
+
+        Attribute:
+        ----------
+            rate: 采样率
+        """
         for i in range(self.chartNum):
             self.chartList[i].updateRate(int(rate))
 
     def updateXdis(self, xdis: str|int = 4):
+        """
+        更新X轴显示范围
+
+        Attribute:
+        ----------
+            xdis: X轴显示范围
+        """
         for i in range(self.chartNum):
             self.chartList[i].updateXdis(int(xdis))
     
     def updateYdis(self, ydis: str|int = 1000):
+        """
+        更新Y轴显示范围
+
+        Attribute:
+        ----------
+            ydis: Y轴显示范围
+        """
         for i in range(self.chartNum):
             self.chartList[i].updateYdis(int(ydis))
 
     def resetChart(self):
+        """
+        重置图表
+
+        设定自动更新坐标轴范围
+        """
         for i in range(self.chartNum):
             self.chartList[i].canvas.zoomReset()
             self.chartList[i].resizeEvent(None)

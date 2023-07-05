@@ -194,7 +194,7 @@ class mainWin(MyWindow):
         self.serial_read_thread.serial_read_data_decode_update_signal.connect(self.data_process_thread.put_data)    # 串口读取线程 -> 数据处理线程
         self.serial_read_thread.serial_read_data_decode_update_signal.connect(self.data_save_thread.put_data)   # 串口读取线程 -> 数据保存线程
         # self.data_process_thread.data_process_signal.connect(self.data_update_thread.put_data)    # 数据处理线程 -> 数据更新线程
-        self.data_process_thread.data_process_signal.connect(self.fftWidget.update_chart)   # 数据处理线程 -> 频谱显示窗口
+        self.data_process_thread.data_process_signal.connect(self.fftWidget.updateData)   # 数据处理线程 -> 频谱显示窗口
         self.data_process_thread.data_process_signal.connect(self.drawFrame.updateData)  # 数据处理线程 -> 图像显示窗口
         # self.fft_process_thread.fft_process_signal.connect(self.fftWidget.updateChart)    # fft处理线程 -> 频谱显示窗口
         self.data_save_thread.data_save_signal.connect(self.data_save_signal_slot)  # 数据保存线程 -> 主窗口(文件名称更新)
